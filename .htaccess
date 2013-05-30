@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteBase /
+RewriteRule ^auth/login$ auth/login/index.php [L]
