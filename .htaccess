@@ -3,6 +3,7 @@ RewriteEngine On
 RewriteBase /
 #RewriteRule ^auth/login$ auth/login/index.php [L]
 #№RewriteRule ^auth/getpass$ auth/getpass/index.php [L]
+RewriteRule ^support$ http://dvjk.claimz.net/ [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(\.php)$ [NC]
 RewriteRule ^(.+) $1\.php [L]
