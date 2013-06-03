@@ -3,9 +3,9 @@
  * Генерация и отправка пароля по смс
  */
 
-require_once __DIR__ . '/../../sms.php';
-require_once __DIR__ . '/../../funcs.php';
-require_once __DIR__ . '/../../db.php';
+require_once __DIR__ . '/../sms.php';
+require_once __DIR__ . '/../funcs.php';
+require_once __DIR__ . '/../db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 

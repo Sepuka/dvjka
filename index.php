@@ -1,5 +1,4 @@
 <?php
-
 define('HOST', 'dvjk');
 
 if (! empty($_COOKIE['phone'])) {

@@ -3,11 +3,11 @@
  * Авторизация пользователей
  */
 
-require_once __DIR__ . '/../../funcs.php';
-require_once __DIR__ . '/../../db.php';
+require_once __DIR__ . '/../funcs.php';
+require_once __DIR__ . '/../db.php';
 
 // Время хранения авторизации пользователя в куках
-define('SAVE_USER', 10);
+define('SAVE_USER', 30);
 
 header('Content-Type: application/json; charset=utf-8');
 
