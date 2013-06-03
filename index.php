@@ -1,5 +1,5 @@
 <?php
-define('HOST', 'dvjk');
+$settings = parse_ini_file('settings.ini', true);
 
 if (! empty($_COOKIE['phone'])) {
     $index = file_get_contents('tmpl/index.tmpl');
@@ -13,7 +13,7 @@ if (! empty($_COOKIE['phone'])) {
 
 $index = str_replace(
         array('{HOST}', '{IP}'),
-        array(HOST, $_SERVER['REMOTE_ADDR']),
+        array($settings['site']['host'], $_SERVER['REMOTE_ADDR']),
         $index);
 
 echo $index;

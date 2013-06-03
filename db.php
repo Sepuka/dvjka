@@ -4,18 +4,16 @@
  */
 class DB
 {
-    const DBhost        = 'localhost';
-    const DBname        = 'freelance';
-    const DBuser        = 'root';
-    const DBpass        = '';
-    const PREFIX        = 'DVJK_';
+    public $settings    = null;
 
     protected $_conn    = null;
 
     protected static $i = null;
 
     protected function __construct() {
-        $this->_conn = mysqli_connect(self::DBhost, self::DBuser, self::DBpass, self::DBname);
+        $this->settings = parse_ini_file('settings.ini', true);
+        $this->_conn = mysqli_connect($this->settings['db']['DBhost'], $this->settings['db']['DBuser'],
+                $this->settings['db']['DBpass'], $this->settings['db']['DBname']);
         if ($this->_conn->connect_error) {
             exit($this->_conn->connect_error);
         }
@@ -42,7 +40,7 @@ class DB
     public function createUser($phone, $password)
     {
         $query = sprintf("REPLACE `%susers` SET `Phone`='%s', `Password`='%s', `DateTimeCreate`=NOW()",
-            self::PREFIX, $phone, $password);
+            $this->settings['db']['PREFIX'], $phone, $password);
         return $this->_conn->query($query);
     }
 
@@ -54,7 +52,7 @@ class DB
     public function findUser($phone)
     {
         $query = sprintf("SELECT * FROM `%susers` WHERE `Phone`='%s'",
-            self::PREFIX, $this->_conn->real_escape_string($phone));
+            $this->settings['db']['PREFIX'], $this->_conn->real_escape_string($phone));
         $result = $this->_conn->query($query);
         if ($result->num_rows) {
             return $result->fetch_object();
