@@ -1,3 +1,5 @@
+DirectorySlash Off
 RewriteEngine On
 RewriteBase /
 RewriteRule ^auth/login$ auth/login/index.php [L]
+RewriteRule ^auth/getpass$ auth/getpass/index.php [L]
