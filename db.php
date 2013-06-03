@@ -7,7 +7,7 @@ class DB
     const DBhost        = 'localhost';
     const DBname        = 'freelance';
     const DBuser        = 'root';
-    const DBpass        = 1;
+    const DBpass        = '';
     const PREFIX        = 'DVJK_';
 
     protected $_conn    = null;

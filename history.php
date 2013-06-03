@@ -4,11 +4,11 @@ define('HOST', 'dvjk');
 if (! empty($_COOKIE['phone'])) {
     $index = file_get_contents('tmpl/history.tmpl');
     $index = str_replace(
-        array('{PHONE}', '{HOST}'),
-        array($_COOKIE['phone'], HOST),
+        array('{PHONE}', '{HOST}', '{IP}'),
+        array($_COOKIE['phone'], HOST, $_SERVER['REMOTE_ADDR']),
         $index);
 } else {
-    http_redirect('/');
+    Header('Location: http://'. HOST, true, 302);
 }
 
 echo $index;

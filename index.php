@@ -12,8 +12,8 @@ if (! empty($_COOKIE['phone'])) {
 }
 
 $index = str_replace(
-        array('{HOST}'),
-        array(HOST),
+        array('{HOST}', '{IP}'),
+        array(HOST, $_SERVER['REMOTE_ADDR']),
         $index);
 
 echo $index;
