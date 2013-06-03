@@ -8,3 +8,20 @@
 
 В файле db.php есть константы класса DBhost (обычно это localhost), DBname (имя БД),
 DBuser (имя пользователя), DBpass (пароль), PREFIX (префикс таблиц).
+
+ПРИМЕР НАСТРОЙКИ ХОСТА
+
+<VirtualHost *:80>
+ DocumentRoot /srv/www/tmp/dvjka
+ ServerName dvjka
+ ServerAdmin shlomin@1mps.ru
+ DirectorySlash off
+ <Directory /srv/www/tmp/dvjka>
+  Options Indexes FollowSymLinks
+  AllowOverride All
+  Order allow,deny
+  Allow from all
+ </Directory>
+ ErrorLog /srv/www/tmp/dvjka/errors.log
+ CustomLog /srv/www/tmp/dvjka/custom.log "%t %h \"%r\" size %b code %s"
+</VirtualHost>
