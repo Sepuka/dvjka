@@ -6,6 +6,7 @@
 require_once __DIR__ . '/../../funcs.php';
 require_once __DIR__ . '/../../db.php';
 
+// Время хранения авторизации пользователя в куках
 define('SAVE_USER', 10);
 
 header('Content-Type: application/json; charset=utf-8');
