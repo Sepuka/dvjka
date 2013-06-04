@@ -59,4 +59,13 @@ class DB
         } else
             return null;
     }
+
+    /**
+     * Получение соединения
+     * @return object
+     */
+    public function getConn()
+    {
+        return $this->_conn;
+    }
 }

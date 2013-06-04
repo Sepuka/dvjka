@@ -30,6 +30,12 @@ class GetPass
         return str_pad(mt_rand(substr(100, 0, self::PASS_LENGTH), substr(99999999, 0, self::PASS_LENGTH)), self::PASS_LENGTH, STR_PAD_LEFT, 0);
     }
 
+    /**
+     * Привязка пароля к пользователю
+     * @param string $phone
+     * @param string $password
+     * @return array
+     */
     public function bindPassword($phone, $password)
     {
         $db = DB::getInstance();
@@ -43,6 +49,8 @@ class GetPass
         } else {
             if (time() - strtotime($user->DateTimeCreate) + 14400 < self::TIME_REQ_PASS) {
                 return array('data'=>"Запрос на получение пароля можно делать не чаще 1 раза в 5 минут. Совсем недавно с этого компьютера или на номер +7{$phone} уже отправлялся запрос на восстановление пароля. Следующий запрос можно будет отправить на ранее чем через 5 минут с момента последнего запроса.", 'status'=>'e');
+            } else if ($user->Enabled == 0) {
+                 return array('data' => sprintf('Номер +7%s заблокирован за нарушение правил', $phone), 'status'=>'ok');
             } else {
                 return array('data'=>"Пароль отправлен на номер +7{$phone}", 'status'=>'ok');
             }
