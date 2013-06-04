@@ -68,4 +68,18 @@ class DB
     {
         return $this->_conn;
     }
+
+    /**
+     * Добавление намерения заплатить
+     * @param integer $sender_id
+     * @param integer $dest_id
+     * @param integer $amount
+     * @return boolean
+     */
+    public function addPayment($sender_id, $dest_id, $amount)
+    {
+        $query = sprintf('INSERT INTO `%spayments` SET `Sender_id`=%s, `Dest_id`=%s, `DateTimeCreate`=NOW(), `Amount`=%0.2f',
+            $this->settings['db']['PREFIX'], $sender_id, $dest_id, $amount);
+        return $this->_conn->query($query);
+    }
 }
