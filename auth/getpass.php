@@ -39,10 +39,15 @@ class GetPass
     public function bindPassword($phone, $password)
     {
         $db = DB::getInstance();
+        $settings = parse_ini_file('../settings.ini', true);
+        $sms = new MainSMS($settings['sms']['project'], $settings['sms']['apiKey'], false, false);
         $user = $db->findUser($phone);
         if ($user === null) {
             if ($db->createUser($phone, $password)) {
-                return array('data'=>"Пароль отправлен на номер +7{$phone}", 'status'=>'ok');
+                if ($sms->sendSMS($phone, $password, $settings['sms']['sender']))
+                    return array('data'=>"Пароль отправлен на номер +7{$phone}", 'status'=>'ok');
+                else
+                    return array('data'=>"Ошибка отправки сообщения с паролем на номер +7{$phone}", 'status'=>'e');
             } else {
                 return array('data'=>'Не удалось создать нового пользователя',  'status'=>'e');
             }
@@ -52,7 +57,10 @@ class GetPass
             } else if ($user->Enabled == 0) {
                  return array('data' => sprintf('Номер +7%s заблокирован за нарушение правил', $phone), 'status'=>'ok');
             } else {
-                return array('data'=>"Пароль отправлен на номер +7{$phone}", 'status'=>'ok');
+                if ($sms->sendSMS($phone, $password, $settings['sms']['sender']))
+                    return array('data'=>"Пароль отправлен на номер +7{$phone}", 'status'=>'ok');
+                else
+                    return array('data'=>"Ошибка отправки сообщения с паролем на номер +7{$phone}", 'status'=>'e');
             }
         }
     }
