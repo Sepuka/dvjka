@@ -6,9 +6,13 @@ require_once __DIR__ . '/db.php';
 $settings = parse_ini_file('settings.ini', true);
 
 if (! empty($_COOKIE['phone'])) {
+    $db = DB::getInstance();
+    $sender = $db->findUser($_COOKIE['phone']);
+    $youself_donated = youself_donated($sender);
+    $you_donated = you_donated($sender);
     // Клиент изъявил желание заплатить
     if (! empty($_COOKIE['add']) && (in_array($_COOKIE['add'], array('100','1000','10000')))) {
-        $db = DB::getInstance();
+        // Еще не заплатил
         if (empty($_COOKIE['lox'])) {
             $index = file_get_contents('tmpl/'.$_COOKIE['add'].'.tmpl');
             $destPhone = getDestPhone();
@@ -16,7 +20,6 @@ if (! empty($_COOKIE['phone'])) {
                 $destPhone = $destPhone->Phone;
 
             // Создание намерения заплатить
-            $sender = $db->findUser($_COOKIE['phone']);
             $dest = $db->findUser($destPhone);
             if ($db->addPayment($sender->Id, $dest->Id, $_COOKIE['add']))
                 setcookie('lox', $db->getConn()->insert_id, time() + (int)$settings['site']['savetime'], '/');
@@ -29,14 +32,16 @@ if (! empty($_COOKIE['phone'])) {
             }
         }
         $index = str_replace(
-            array('{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}'),
-            array($destPhone, date('d.m.Y H:i'), $_COOKIE['add']),
+            array('{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
+                '{YOUSELF_DONATED}', '{4YOU_DONATED}'),
+            array($destPhone, date('d.m.Y H:i'), $_COOKIE['add'],
+                $youself_donated, $you_donated),
             $index);
     } else {
         $index = file_get_contents('tmpl/index.tmpl');
         $index = str_replace(
-            array('{PHONE}'),
-            array($_COOKIE['phone']),
+            array('{PHONE}', '{YOUSELF_DONATED}', '{4YOU_DONATED}'),
+            array($_COOKIE['phone'], $youself_donated, $you_donated),
             $index);
     }
 } else {

@@ -4,6 +4,8 @@
  */
 
 require_once __DIR__ . '/db.php';
+$db = DB::getInstance();
+$sender = $db->findUser($_COOKIE['phone']);
 
 /**
  * Извлекает получателя перевода
@@ -53,4 +55,44 @@ function checkPhone($phone)
         return null;
     }
     return $phone;
+}
+
+/**
+ * Сколько пожертвовал клиент
+ * @param stdClass $client
+ * @return integer
+ */
+function youself_donated(stdClass $client)
+{
+    $settings = parse_ini_file('settings.ini', true);
+    $db = DB::getInstance();
+    $query = sprintf('SELECT SUM(`Amount`) as `sum` FROM `%spayments` where `Sender_id` = %d AND `Complete`=1',
+        $settings['db']['PREFIX'], $client->Id);
+    $result = $db->getConn()->query($query);
+    if ($result->num_rows) {
+        $row = $result->fetch_row();
+        return ($row[0] === null) ? 0 : $row[0];
+    } else {
+        return 0;
+    }
+}
+
+/**
+ * Сколько пожертвовал клиенту
+ * @param stdClass $client
+ * @return integer
+ */
+function you_donated(stdClass $client)
+{
+    $settings = parse_ini_file('settings.ini', true);
+    $db = DB::getInstance();
+    $query = sprintf('SELECT SUM(`Amount`) as `sum` FROM `%spayments` where `Dest_id` = %d AND `Complete`=1',
+        $settings['db']['PREFIX'], $client->Id);
+    $result = $db->getConn()->query($query);
+    if ($result->num_rows) {
+        $row = $result->fetch_row();
+        return ($row[0] === null) ? 0 : $row[0];
+    } else {
+        return 0;
+    }
 }
