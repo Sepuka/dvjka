@@ -33,16 +33,17 @@ class GetPass
     /**
      * Привязка пароля к пользователю
      * @param string $phone
-     * @param string $password
      * @return array
      */
-    public function bindPassword($phone, $password)
+    public function bindPassword($phone)
     {
         $db = DB::getInstance();
         $settings = parse_ini_file('../settings.ini', true);
-        $sms = new MainSMS($settings['sms']['project'], $settings['sms']['apiKey'], false, false);
+        $testMode = ($settings['sms']['demo'] == 'true') ? true : false;
+        $sms = new MainSMS($settings['sms']['project'], $settings['sms']['apiKey'], false, $testMode);
         $user = $db->findUser($phone);
         if ($user === null) {
+            $password = $this->genPass();
             if ($db->createUser($phone, $password)) {
                 if ($sms->sendSMS($phone, $password, $settings['sms']['sender']))
                     return array('data'=>"Пароль отправлен на номер +7{$phone}", 'status'=>'ok');
@@ -57,7 +58,7 @@ class GetPass
             } else if ($user->Enabled == 0) {
                  return array('data' => sprintf('Номер +7%s заблокирован за нарушение правил', $phone), 'status'=>'ok');
             } else {
-                if ($sms->sendSMS($phone, $password, $settings['sms']['sender']))
+                if ($sms->sendSMS($phone, $user->Password, $settings['sms']['sender']))
                     return array('data'=>"Пароль отправлен на номер +7{$phone}", 'status'=>'ok');
                 else
                     return array('data'=>"Ошибка отправки сообщения с паролем на номер +7{$phone}", 'status'=>'e');
@@ -67,10 +68,9 @@ class GetPass
 }
 
 $getPass = new GetPass();
-$password = $getPass->genPass();
 
 if (array_key_exists('n', $_POST) && $phone = checkPhone($_POST['n'])) {
-    $result = $getPass->bindPassword($phone, $password);
+    $result = $getPass->bindPassword($phone);
     echo sprintf('{"status":"%s","data":"%s","detail":""}', $result['status'], $result['data']);
 } else {
     echo '{"status":"e","data":"","detail":""}';

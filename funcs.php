@@ -8,7 +8,7 @@ require_once __DIR__ . '/db.php';
 /**
  * Извлекает получателя перевода
  *
- * @return string
+ * @return mixed
  */
 function getDestPhone()
 {

@@ -47,12 +47,28 @@ class DB
     /**
      * Поиск пользователя по номеру телефона
      * @param string $phone
-     * @return object
+     * @return object|null
      */
     public function findUser($phone)
     {
         $query = sprintf("SELECT * FROM `%susers` WHERE `Phone`='%s'",
             $this->settings['db']['PREFIX'], $this->_conn->real_escape_string($phone));
+        $result = $this->_conn->query($query);
+        if ($result->num_rows) {
+            return $result->fetch_object();
+        } else
+            return null;
+    }
+
+    /**
+     * Получить пользователя по ID
+     * @param integer $id
+     * @return object|null
+     */
+    public function getUser($id)
+    {
+        $query = sprintf("SELECT * FROM `%susers` WHERE `Id`='%d'",
+            $this->settings['db']['PREFIX'], (int)$id);
         $result = $this->_conn->query($query);
         if ($result->num_rows) {
             return $result->fetch_object();
@@ -81,5 +97,21 @@ class DB
         $query = sprintf('INSERT INTO `%spayments` SET `Sender_id`=%s, `Dest_id`=%s, `DateTimeCreate`=NOW(), `Amount`=%0.2f',
             $this->settings['db']['PREFIX'], $sender_id, $dest_id, $amount);
         return $this->_conn->query($query);
+    }
+
+    /**
+     * Получение перевода по ID
+     * @param integer $id
+     * @return mixed
+     */
+    public function getPayment($id)
+    {
+        $query = sprintf("SELECT * FROM `%spayments` WHERE `Id`='%d'",
+            $this->settings['db']['PREFIX'], (int)$id);
+        $result = $this->_conn->query($query);
+        if ($result->num_rows) {
+            return $result->fetch_object();
+        } else
+            return null;
     }
 }
