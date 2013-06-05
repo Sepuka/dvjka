@@ -96,3 +96,18 @@ function you_donated(stdClass $client)
         return 0;
     }
 }
+
+function getRef(stdClass $client)
+{
+    $settings = parse_ini_file('settings.ini', true);
+    $db = DB::getInstance();
+    $query = sprintf('SELECT COUNT(*) as `ref` FROM `%susers` where `Ref` = %d',
+        $settings['db']['PREFIX'], $client->Id);
+    $result = $db->getConn()->query($query);
+    if ($result->num_rows) {
+        $row = $result->fetch_row();
+        return ($row[0] === null) ? 0 : $row[0];
+    } else {
+        return 0;
+    }
+}

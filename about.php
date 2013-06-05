@@ -6,9 +6,9 @@ $settings = parse_ini_file('settings.ini', true);
 if (! empty($_COOKIE['phone'])) {
     $index = file_get_contents('tmpl/about.tmpl');
     $index = str_replace(
-        array('{PHONE}', '{HOST}', '{IP}', '{YOUSELF_DONATED}', '{4YOU_DONATED}'),
+        array('{PHONE}', '{HOST}', '{IP}', '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
         array($_COOKIE['phone'], $settings['site']['host'], $_SERVER['REMOTE_ADDR'],
-            youself_donated($sender), you_donated($sender)),
+            youself_donated($sender), you_donated($sender), getRef($sender)),
         $index);
 } else {
     Header('Location: http://'. $settings['site']['host'], true, 302);

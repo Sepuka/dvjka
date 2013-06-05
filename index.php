@@ -10,6 +10,7 @@ if (! empty($_COOKIE['phone'])) {
     $sender = $db->findUser($_COOKIE['phone']);
     $youself_donated = youself_donated($sender);
     $you_donated = you_donated($sender);
+    $ref = getRef($sender);
     // Клиент изъявил желание заплатить
     if (! empty($_COOKIE['add']) && (in_array($_COOKIE['add'], array('100','1000','10000')))) {
         // Еще не заплатил
@@ -27,21 +28,27 @@ if (! empty($_COOKIE['phone'])) {
             $index = file_get_contents('tmpl/rejection.tmpl');
             $payment = $db->getPayment($_COOKIE['lox']);
             if ($payment) {
+                if ($payment->Complete) {// Если платеж подтвержден уходим на обычную главную
+                    setcookie('lox', false, time(), '/');
+                    setcookie('add', false, time(), '/');
+                    Header('Location: http://'. $settings['site']['host'], true, 302);
+                    exit();
+                }
                 $destUser = $db->getUser($payment->Dest_id);
                 $destPhone = $destUser->Phone;
             }
         }
         $index = str_replace(
             array('{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
-                '{YOUSELF_DONATED}', '{4YOU_DONATED}'),
+                '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
             array($destPhone, date('d.m.Y H:i'), $_COOKIE['add'],
-                $youself_donated, $you_donated),
+                $youself_donated, $you_donated, $ref),
             $index);
     } else {
         $index = file_get_contents('tmpl/index.tmpl');
         $index = str_replace(
-            array('{PHONE}', '{YOUSELF_DONATED}', '{4YOU_DONATED}'),
-            array($_COOKIE['phone'], $youself_donated, $you_donated),
+            array('{PHONE}', '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
+            array($_COOKIE['phone'], $youself_donated, $you_donated, $ref),
             $index);
     }
 } else {
