@@ -163,6 +163,56 @@ function you_donated(stdClass $client)
     }
 }
 
+/**
+ * Вам пожертвовали история
+ * @param stdClass $client
+ * @return string
+ */
+function you_donated_history(stdClass $client, $period)
+{
+    $settings = parse_ini_file('settings.ini', true);
+    $db = DB::getInstance();
+    $query = sprintf('SELECT * FROM `%spayments` where `Dest_id` = %d AND `Complete`=1 AND `DateTimeCreate`>= "%s"',
+        $settings['db']['PREFIX'], $client->Id, $period);
+    $result = $db->getConn()->query($query);
+    if ($result->num_rows) {
+        $history = '';
+        foreach($result->fetch_all(MYSQLI_ASSOC) as $payment) {
+            $src = $db->getUser($payment['Sender_id']);
+            $date = $payment['DateTimeCreate'];
+            $history .= sprintf('<b>%d</b> рублей участник <b>+7%s</b> - %s<br>', $payment['Amount'], $src->Phone, $date);
+        }
+        return $history;
+    } else {
+        return 'Вам ничего не пожертвовали.';
+    }
+}
+
+/**
+ * Вы пожертвовали история
+ * @param stdClass $client
+ * @return string
+ */
+function youself_donated_history(stdClass $client, $period)
+{
+    $settings = parse_ini_file('settings.ini', true);
+    $db = DB::getInstance();
+    $query = sprintf('SELECT * FROM `%spayments` where `Sender_id` = %d AND `Complete`=1 AND `DateTimeCreate`>= "%s"',
+        $settings['db']['PREFIX'], $client->Id, $period);
+    $result = $db->getConn()->query($query);
+    if ($result->num_rows) {
+        $history = '';
+        foreach($result->fetch_all(MYSQLI_ASSOC) as $payment) {
+            $dst = $db->getUser($payment['Dest_id']);
+            $date = $payment['DateTimeCreate'];
+            $history .= sprintf('<b>%d</b> рублей участнику <b>+7%s</b> - %s<br>', $payment['Amount'], $dst->Phone, $date);
+        }
+        return $history;
+    } else {
+        return 'Вы ничего не пожертвовали.';
+    }
+}
+
 function getRef(stdClass $client)
 {
     $settings = parse_ini_file('settings.ini', true);
@@ -178,11 +228,7 @@ function getRef(stdClass $client)
     }
 }
 
-/**
- * Генератор "Тем временем"
- * @return string
- */
-function meanwhile()
+function rusmonth()
 {
     $month = array(
         "01" => "января",
@@ -198,6 +244,15 @@ function meanwhile()
         "11" => "ноября",
         "12" => "декабря"
     );
+    return $month[date('m')];
+}
+
+/**
+ * Генератор "Тем временем"
+ * @return string
+ */
+function meanwhile()
+{
     $curdate = time();
     $result = '';
     for ($i = 0; $i < 10; $i++) {
@@ -206,7 +261,7 @@ function meanwhile()
         $src = mt_rand(11111, 99999);
         $dst = mt_rand(11111, 99999);
         $result .= sprintf('<div class="trow">%s участник +79%d**** получил <b>%d</b> рублей от +79%d****</div>',
-            date('d ' . $month[date('m')] . ' в H:i', $curdate), $src, $sum, $dst);
+            date('d ' . rusmonth() . ' в H:i', $curdate), $src, $sum, $dst);
     }
     return $result;
 }
