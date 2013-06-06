@@ -16,15 +16,12 @@ if (! empty($_COOKIE['phone'])) {
         // Еще не заплатил
         if (empty($_COOKIE['lox'])) {
             $index = file_get_contents('tmpl/'.$_COOKIE['add'].'.tmpl');
-            $destPhone = getDestPhone();
-            if (is_object($destPhone))
-                $destPhone = $destPhone->Phone;
+            $destUser = getDestPhone();
 
             // Создание намерения заплатить
-            $dest = $db->findUser($destPhone);
-            if ($db->addPayment($sender->Id, $dest->Id, $_COOKIE['add']))
+            if ($db->addPayment($sender->Id, $destUser->Id, $_COOKIE['add']))
                 setcookie('lox', $db->getConn()->insert_id, time() + (int)$settings['site']['savetime'], '/');
-        } else {
+        } else {//Уже заплатил
             $index = file_get_contents('tmpl/rejection.tmpl');
             $payment = $db->getPayment($_COOKIE['lox']);
             if ($payment) {
@@ -35,13 +32,12 @@ if (! empty($_COOKIE['phone'])) {
                     exit();
                 }
                 $destUser = $db->getUser($payment->Dest_id);
-                $destPhone = $destUser->Phone;
             }
         }
         $index = str_replace(
             array('{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
                 '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
-            array($destPhone, date('d.m.Y H:i'), $_COOKIE['add'],
+            array($destUser->Phone, date('d.m.Y H:i'), $_COOKIE['add'],
                 $youself_donated, $you_donated, $ref),
             $index);
     } else {
