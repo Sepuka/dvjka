@@ -14,7 +14,7 @@ class DB
         $this->settings = parse_ini_file('settings.ini', true);
         $this->_conn = mysqli_connect($this->settings['db']['DBhost'], $this->settings['db']['DBuser'],
                 $this->settings['db']['DBpass'], $this->settings['db']['DBname']);
-        if ($this->_conn->connect_error) {
+        if (! $this->_conn || $this->_conn->connect_error) {
             exit($this->_conn->connect_error);
         }
     }
@@ -39,8 +39,16 @@ class DB
      */
     public function createUser($phone, $password)
     {
-        $query = sprintf("REPLACE `%susers` SET `Phone`='%s', `Password`='%s', `DateTimeCreate`=NOW()",
-            $this->settings['db']['PREFIX'], $phone, $password);
+        if (! empty($_COOKIE['ref'])) {
+            $query = sprintf('SELECT `Id` FROM `%susers` WHERE `Link`="%s"', $this->settings['db']['PREFIX'], $_COOKIE['ref']);
+            $result = $this->_conn->query($query);
+            if ($result->num_rows) {
+                $ref = $result->fetch_row();
+                $refId = $ref[0];
+            }
+        }
+        $query = sprintf("REPLACE `%susers` SET `Phone`='%s', `Password`='%s', `DateTimeCreate`=NOW(), `Ref`=%d, `Link`='%s'",
+            $this->settings['db']['PREFIX'], $phone, $password, (isset($refId)) ? $refId : null, str_pad(mt_rand(111, 99999999), 8, 0, STR_PAD_LEFT));
         return $this->_conn->query($query);
     }
 

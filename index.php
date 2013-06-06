@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/funcs.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/funcs.php';
 
 $settings = parse_ini_file('settings.ini', true);
 
@@ -49,6 +49,9 @@ if (! empty($_COOKIE['phone'])) {
     }
 } else {
     $index = file_get_contents('tmpl/indexnew.tmpl');
+    if (! empty($_GET['ref'])) {
+        setcookie('ref', $_GET['ref'], time() + (int)$settings['site']['savetime'], '/');
+    }
 }
 
 $index = str_replace(

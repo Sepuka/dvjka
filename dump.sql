@@ -16,6 +16,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `DVJK_users`
+--
+
+DROP TABLE IF EXISTS `DVJK_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `DVJK_users` (
+  `Id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `Phone` char(10) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `DateTimeCreate` datetime NOT NULL,
+  `Enabled` tinyint(4) NOT NULL DEFAULT '1',
+  `Ref` bigint(20) unsigned DEFAULT NULL,
+  `Link` char(8) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `Phone` (`Phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `DVJK_users`
+--
+
+LOCK TABLES `DVJK_users` WRITE;
+/*!40000 ALTER TABLE `DVJK_users` DISABLE KEYS */;
+INSERT INTO `DVJK_users` VALUES (6,'9091112233','58704563','2013-06-03 15:29:52',1,NULL,'11111111'),(7,'9312375828','88060179','2013-06-04 12:34:58',1,6,NULL),(8,'9312375829','27131736','2013-06-06 15:24:39',1,NULL,NULL),(9,'9312375827','08605808','2013-06-06 16:33:16',1,8,NULL),(14,'9091112234','70343456','2013-06-06 22:51:50',1,6,'67002320');
+/*!40000 ALTER TABLE `DVJK_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `DVJK_payments`
 --
 
@@ -44,35 +74,6 @@ LOCK TABLES `DVJK_payments` WRITE;
 INSERT INTO `DVJK_payments` VALUES (1,6,7,10000.00,'2013-06-05 11:20:57',1),(2,7,6,100.00,'2013-06-05 17:36:30',1),(3,6,7,100.00,'2013-06-05 18:08:51',1),(4,6,7,100.00,'2013-06-05 18:12:10',1),(5,8,6,1000.00,'2013-06-06 16:00:16',1),(8,6,8,100.00,'2013-06-06 16:19:42',1),(9,7,6,100.00,'2013-06-06 16:30:39',1),(10,9,6,1000.00,'2013-06-06 16:33:37',1),(11,9,8,100.00,'2013-06-06 16:35:26',1),(12,8,9,100.00,'2013-06-06 17:00:30',1);
 /*!40000 ALTER TABLE `DVJK_payments` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `DVJK_users`
---
-
-DROP TABLE IF EXISTS `DVJK_users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `DVJK_users` (
-  `Id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `Phone` char(10) NOT NULL,
-  `Password` varchar(255) NOT NULL,
-  `DateTimeCreate` datetime NOT NULL,
-  `Enabled` tinyint(4) NOT NULL DEFAULT '1',
-  `Ref` bigint(20) unsigned DEFAULT NULL,
-  PRIMARY KEY (`Id`),
-  UNIQUE KEY `Phone` (`Phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `DVJK_users`
---
-
-LOCK TABLES `DVJK_users` WRITE;
-/*!40000 ALTER TABLE `DVJK_users` DISABLE KEYS */;
-INSERT INTO `DVJK_users` VALUES (6,'9091112233','58704563','2013-06-03 15:29:52',1,NULL),(7,'9312375828','88060179','2013-06-04 12:34:58',1,6),(8,'9312375829','27131736','2013-06-06 15:24:39',1,NULL),(9,'9312375827','08605808','2013-06-06 16:33:16',1,8);
-/*!40000 ALTER TABLE `DVJK_users` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -83,4 +84,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-06-06 18:19:25
+-- Dump completed on 2013-06-06 22:52:47
