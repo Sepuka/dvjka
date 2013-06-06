@@ -56,8 +56,8 @@ if (! empty($_COOKIE['phone'])) {
 }
 
 $index = str_replace(
-        array('{HOST}', '{IP}'),
-        array($settings['site']['host'], $_SERVER['REMOTE_ADDR']),
+        array('{HOST}', '{IP}', '{MEANWHILE}'),
+        array($settings['site']['host'], $_SERVER['REMOTE_ADDR'], meanwhile()),
         $index);
 
 echo $index;

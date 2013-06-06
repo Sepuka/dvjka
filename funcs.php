@@ -7,6 +7,8 @@ require_once __DIR__ . '/db.php';
 $db = DB::getInstance();
 $sender = $db->findUser($_COOKIE['phone']);
 
+date_default_timezone_set("Europe/Moscow");
+
 /**
  * Извлекает получателя перевода
  *
@@ -110,4 +112,37 @@ function getRef(stdClass $client)
     } else {
         return 0;
     }
+}
+
+/**
+ * Генератор "Тем временем"
+ * @return string
+ */
+function meanwhile()
+{
+    $month = array(
+        "01" => "января",
+        "02" => "февраля",
+        "03" => "марта",
+        "04" => "апреля",
+        "05" => "мая",
+        "06" => "июня",
+        "07" => "июля",
+        "08" => "августа",
+        "09" => "сентября",
+        "10" => "октября",
+        "11" => "ноября",
+        "12" => "декабря"
+    );
+    $curdate = time();
+    $result = '';
+    for ($i = 0; $i < 10; $i++) {
+        $curdate = $curdate - (mt_rand(20, 60) * mt_rand(1, 4));
+        $sum = ($curdate % 100 < 2) ? 10000 : (($curdate % 10 > 7) ? 1000 : 100);
+        $src = mt_rand(11111, 99999);
+        $dst = mt_rand(11111, 99999);
+        $result .= sprintf('<div class="trow">%s участник +79%d**** получил <b>%d</b> рублей от +79%d****</div>',
+            date('d ' . $month[date('m')] . ' в H:i', $curdate), $src, $sum, $dst);
+    }
+    return $result;
 }
