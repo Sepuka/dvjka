@@ -5,7 +5,7 @@ RewriteRule ^support$ http://dvjk.claimz.net/ [L]
 RewriteRule ^regulations$ rules [L]
 RewriteRule ^breakers$ gamno [L]
 RewriteRule ^add/(100|1000|10000)$ add/100.php?sum=$1 [L]
-RewriteRule ^confirm/(send|clean)$ confirm.php?act=$1 [L]
+RewriteRule ^confirm/(send|clean|obtained)$ confirm.php?act=$1 [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(\.php)$ [NC]
 RewriteRule ^(.+) $1\.php [L]

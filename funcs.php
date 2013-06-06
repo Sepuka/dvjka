@@ -30,7 +30,7 @@ function getDestPhone()
                 left join (select Dest_id, sum(Amount) as destsum from DVJK_payments group by Dest_id) as dest
                 on sender.Sender_id=dest.Dest_id
                 where ((sendersum > destsum*5 and sendersum - destsum > %d) or (Dest_id is null))
-                and Sender_id != %d order by DateTimeCreate desc limit 1;',
+                and Sender_id != %d order by DateTimeCreate asc limit 1;',
                 $_COOKIE['add'], $sender->Id);
             $result = $db->getConn()->query($query);
             if ($result->num_rows) {
@@ -51,7 +51,7 @@ function getDestPhone()
             left join (select Dest_id, sum(Amount) as destsum from DVJK_payments group by Dest_id) as dest 
             on sender.Sender_id=dest.Dest_id 
             where ((sendersum > destsum*5 and sendersum - destsum > %d) or (Dest_id is null)) 
-            and Sender_id != %d order by DateTimeCreate desc limit 1;',
+            and Sender_id != %d order by DateTimeCreate asc limit 1;',
             $_COOKIE['add'], $sender->Id);
         $result = $db->getConn()->query($query);
         if ($result->num_rows) {
@@ -64,6 +64,32 @@ function getDestPhone()
             return $user;
         }
     }
+}
+
+function for_me_payments()
+{
+    $db = DB::getInstance();
+    $settings = parse_ini_file('settings.ini', true);
+    $sender = $db->findUser($_COOKIE['phone']);
+    $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=0 order by Id asc',
+        $settings['db']['PREFIX'], $sender->Id);
+    $result = $db->getConn()->query($query);
+    if ($result->num_rows) {
+        $payment = $result->fetch_object();
+        $srcUser = $db->getUser($payment->Sender_id);
+        return sprintf('Сумма <b>%s</b> рублей<br>'.
+            'QIWI-кошелек с которого должен прийти платеж: <b>+7%s</b><br>'.
+            'Статус: <b>Перевод совершен и ожидает Вашего подтверждения</b> - %s<br>'.
+            'Вам необходимо в течение 24 часов подтвердить или опровергнуть получение перевода со счета отправителя.'.
+            'Проверьте раздел отчетов своего QIWI-кошелька, если перевод с кошелька отправителя есть - нажмите "Платеж пришел",'.
+            'если платежа нет - нажмите "Платеж не пришел". Перевод будет автоматически подтвержден если вы не подтвердите или '.
+            'не опровергнете его в течение 24 часов.'.
+            '<br><div class="buttonbox">'.
+            '<a class="button" href="/confirm/obtained" onclick="return dvjk.confirm(\"Вы уверены?\");">Платеж пришел</a>'.
+            '<a class="button" href="/confirm/clean" onclick="return dvjk.confirm(\"Вы уверены?\");">Платеж не пришел - попытка мошенничества</a></div>',
+            $payment->Amount, $srcUser->Phone, $payment->DateTimeCreate);
+    } else
+        return 'Нет пожертвований ожидающих подтверждения.';
 }
 
 /**
