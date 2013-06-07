@@ -7,6 +7,12 @@ require_once __DIR__ . '/db.php';
 $db = DB::getInstance();
 $sender = $db->findUser($_COOKIE['phone']);
 
+if ($sender && $sender->Enabled == 0) {
+    $settings = parse_ini_file('settings.ini', true);
+    Header('Location: http://'. $settings['site']['host'] . '/lock', true, 302);
+    exit();
+}
+
 date_default_timezone_set("Europe/Moscow");
 
 /**

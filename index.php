@@ -55,8 +55,9 @@ if (! empty($_COOKIE['phone'])) {
 }
 
 $index = str_replace(
-        array('{HOST}', '{IP}', '{MEANWHILE}', '{FOR_ME_PAYMENTS}'),
-        array($settings['site']['host'], $_SERVER['REMOTE_ADDR'], meanwhile(), for_me_payments()),
+        array('{HOST}', '{IP}', '{MEANWHILE}', '{FOR_ME_PAYMENTS}', '{LINK}'),
+        array($settings['site']['host'], $_SERVER['REMOTE_ADDR'], meanwhile(),
+            for_me_payments(), (isset($sender) ? $sender->Link : '')),
         $index);
 
 echo $index;

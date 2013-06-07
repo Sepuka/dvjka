@@ -20,10 +20,11 @@ if (! empty($_COOKIE['phone'])) {
 
     $index = str_replace(
         array('{PHONE}', '{HOST}', '{IP}', '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}',
-            '{YOU_DONATED_HISTORY}', '{YOUSELF_DONATED_HISTORY}'),
+            '{YOU_DONATED_HISTORY}', '{YOUSELF_DONATED_HISTORY}', '{LINK}'),
         array($_COOKIE['phone'], $settings['site']['host'], $_SERVER['REMOTE_ADDR'],
             youself_donated($sender), you_donated($sender), getRef($sender),
-            you_donated_history($sender, $period), youself_donated_history($sender, $period)),
+            you_donated_history($sender, $period), youself_donated_history($sender, $period),
+            $sender->Link),
         $index);
 } else {
     Header('Location: http://'. HOST, true, 302);
