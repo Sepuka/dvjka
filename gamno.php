@@ -4,12 +4,13 @@ require_once __DIR__ . '/funcs.php';
 $index = file_get_contents('tmpl/gamno.tmpl');
 
 $gamnoList = array();
-foreach(getGamno() as $client) {
-    $gamnoList[] = $client['Phone'];
-}
-if ($gamnoList)
+$gamno = getGamno();
+if ($gamno) {
+    foreach($gamno as $client) {
+        $gamnoList[] = $client['Phone'];
+    }
     $gamnoList = implode(', ', $gamnoList);
-else
+} else
     $gamnoList = 'Заблокированных клиентов пока нет';
 
 $index = str_replace(

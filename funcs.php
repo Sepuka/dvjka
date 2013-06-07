@@ -5,12 +5,14 @@
 
 require_once __DIR__ . '/db.php';
 $db = DB::getInstance();
-$sender = $db->findUser($_COOKIE['phone']);
+if (! empty($_COOKIE['phone'])) {
+    $sender = $db->findUser($_COOKIE['phone']);
 
-if ($sender && $sender->Enabled == 0) {
-    $settings = parse_ini_file('settings.ini', true);
-    Header('Location: http://'. $settings['site']['host'] . '/lock', true, 302);
-    exit();
+    if ($sender && $sender->Enabled == 0) {
+        $settings = parse_ini_file('settings.ini', true);
+        Header('Location: http://'. $settings['site']['host'] . '/lock', true, 302);
+        exit();
+    }
 }
 
 date_default_timezone_set("Europe/Moscow");
@@ -76,7 +78,11 @@ function for_me_payments()
 {
     $db = DB::getInstance();
     $settings = parse_ini_file('settings.ini', true);
+    if (empty($_COOKIE['phone']))
+        return;
     $sender = $db->findUser($_COOKIE['phone']);
+    if (! $sender)
+        return 'Нет пожертвований ожидающих подтверждения.';
     $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=0 order by Id asc',
         $settings['db']['PREFIX'], $sender->Id);
     $result = $db->getConn()->query($query);
