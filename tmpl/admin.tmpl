@@ -1,0 +1,105 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Админка</title>
+    <link href="extjs/resources/css/ext-all.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/extjs/bootstrap.js"></script>
+    <style type="text/css">
+        .padding4cell {
+            margin:10px
+        }
+    </style>
+</head>
+<body>
+<script language="javascript" type="text/javascript">
+Ext.onReady(function() {
+    var curId = '';
+
+    function invertStatus()
+    {
+        Ext.Ajax.request({
+            url: 'admincontroller.php?act=status',
+            params: {
+                ID: curId
+            },
+            success: function(answer) {
+                usersStore.reload();
+            },
+            failure: function() {
+                Ext.Msg.alert("Ошибка", "Не удалось изменить статус");
+            }
+        });
+    }
+
+    Ext.define('usersModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'Id', type: 'integer'},
+            {name: 'Phone', type: 'string'},
+            {name: 'DateTimeCreate', type: 'string'},
+            {name: 'Ref', type: 'string'},
+            {name: 'Link', type: 'string'},
+            {name: 'Enabled', type: 'integer'}
+        ]
+    });
+
+    var usersStore = Ext.create('Ext.data.Store', {
+        model: 'usersModel',
+        autoLoad: true,
+        proxy: {
+            method: 'POST',
+            url: 'admincontroller.php?act=getusers',
+            type: 'ajax',
+            reader: {
+                type: 'json',
+                totalProperty: 'total',
+                root: 'id'
+            }
+        }
+    });
+
+    var usersView = Ext.create('Ext.form.Panel', {
+        frame: true,
+        title: 'Пользователи системы',
+        autoScroll: true,
+        items: {
+            xtype: 'gridpanel',
+            store: usersStore,
+            width: 1024,
+            height: 400,
+            forceFit: true,
+            columns: [
+                {header:'ID', dataIndex: 'Id', width: 10},
+                {header:'ТЕЛЕФОН', dataIndex: 'Phone', width: 20},
+                {header:'РЕГИСТРАЦИЯ', dataIndex: 'DateTimeCreate', width: 20},
+                {header:'ИСТОЧНИК', dataIndex: 'Ref', width: 20},
+                {header:'ССЫЛКА', dataIndex: 'Link', width: 20},
+                {header:'АКТИВЕН', dataIndex: 'Enabled', width: 10}
+            ],
+            listeners: {
+                itemdblclick: {
+                    fn: function(self, record, item, index, e, opts) {
+                        curId = record.get('Id');
+                        Ext.Msg.confirm('Изменение статуса клиента', 'Инвертировать статус клиента ' + record.get('Phone') + '?', invertStatus);
+                    }
+                }
+            }
+        }
+    });
+
+    Ext.widget('container', {
+        renderTo: Ext.getBody(),
+        border: true,
+        itemCls: 'padding4cell',
+        layout: {
+            type: 'table',
+            tdAttrs: {
+                align: 'center'
+            }
+        },
+        items:[
+            usersView
+        ]
+    });
+});
+</script>
+</body>
