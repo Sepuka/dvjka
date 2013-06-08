@@ -5,7 +5,11 @@
     <script type="text/javascript" src="/extjs/bootstrap.js"></script>
     <style type="text/css">
         .padding4cell {
-            margin:10px
+            margin:10px,
+            position:absolute;
+            top:20%;
+            left:50%;
+            margin:100px 0 0 -250px;
         }
     </style>
 </head>
@@ -13,6 +17,14 @@
 <script language="javascript" type="text/javascript">
 Ext.onReady(function() {
     var curId = '';
+
+    function convertStatus(status)
+    {
+        if (status == 0)
+            return 'Заблокирован';
+        if (status == 1)
+            return 'Активен';
+    }
 
     function invertStatus()
     {
@@ -38,7 +50,7 @@ Ext.onReady(function() {
             {name: 'DateTimeCreate', type: 'string'},
             {name: 'Ref', type: 'string'},
             {name: 'Link', type: 'string'},
-            {name: 'Enabled', type: 'integer'}
+            {name: 'Enabled', type: 'integer', convert: convertStatus}
         ]
     });
 
@@ -73,7 +85,7 @@ Ext.onReady(function() {
                 {header:'РЕГИСТРАЦИЯ', dataIndex: 'DateTimeCreate', width: 20},
                 {header:'ИСТОЧНИК', dataIndex: 'Ref', width: 20},
                 {header:'ССЫЛКА', dataIndex: 'Link', width: 20},
-                {header:'АКТИВЕН', dataIndex: 'Enabled', width: 10}
+                {header:'СТАТУС', dataIndex: 'Enabled', width: 10}
             ],
             listeners: {
                 itemdblclick: {
