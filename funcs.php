@@ -74,6 +74,10 @@ function getDestPhone()
     }
 }
 
+/**
+ * Показывает что нам пришел перевод, нужно подтвердить
+ * @return string
+ */
 function for_me_payments()
 {
     $db = DB::getInstance();

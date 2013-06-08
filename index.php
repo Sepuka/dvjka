@@ -52,6 +52,7 @@ if (! empty($_COOKIE['phone'])) {
     if (! empty($_GET['ref'])) {
         setcookie('ref', $_GET['ref'], time() + (int)$settings['site']['savetime'], '/');
     }
+    $you_donated = $youself_donated = '';
 }
 
 $index = str_replace(
