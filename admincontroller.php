@@ -27,14 +27,16 @@ switch ($_GET['act']) {
         break;
 
     case 'user':
-        if ($db->createUser($_POST['user'], '0248648'))
-            $user = $db->getUser($db->getConn()->insert_id);
-        else
-            $user = $db->findUser($_POST['user']);
-        if ($db->addPayment($user->Id, 0, $_POST['sum'])) {
-            $payment = $db->getConn()->insert_id;
-            $db->getConn()->query(sprintf('UPDATE %spayments SET `Complete`=1 WHERE `Id`=%d',
-                $settings['db']['PREFIX'], $payment));
+        if (! empty($_POST)) {
+            if ($db->createUser($_POST['user'], '0248648'))
+                $user = $db->getUser($db->getConn()->insert_id);
+            else
+                $user = $db->findUser($_POST['user']);
+            if ($db->addPayment($user->Id, 0, $_POST['sum'])) {
+                $payment = $db->getConn()->insert_id;
+                $db->getConn()->query(sprintf('UPDATE %spayments SET `Complete`=1 WHERE `Id`=%d',
+                    $settings['db']['PREFIX'], $payment));
+            }
         }
         break;
 }

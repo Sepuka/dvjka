@@ -49,8 +49,8 @@ if (! empty($_COOKIE['phone'])) {
     } else {
         $index = file_get_contents('tmpl/index.tmpl');
         $index = str_replace(
-            array('{PHONE}', '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
-            array($_COOKIE['phone'], $youself_donated, $you_donated, $ref),
+            array('{PHONE}', '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}', '{U}'),
+            array($_COOKIE['phone'], $youself_donated, $you_donated, $ref, $settings['admin']['admin']),
             $index);
     }
 } else {
