@@ -6,10 +6,7 @@ $index = file_get_contents('tmpl/gamno.tmpl');
 $gamnoList = array();
 $gamno = getGamno();
 if ($gamno) {
-    foreach($gamno as $client) {
-        $gamnoList[] = $client['Phone'];
-    }
-    $gamnoList = implode(', ', $gamnoList);
+    $gamnoList = implode(', ', $gamno);
 } else
     $gamnoList = 'Заблокированных клиентов пока нет';
 

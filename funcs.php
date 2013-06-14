@@ -116,7 +116,10 @@ function getGamno()
         $settings['db']['PREFIX']);
     $result = $db->getConn()->query($query);
     if ($result->num_rows) {
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $rows = array();
+        while ($row = $result->fetch_object())
+            $rows[] = $row->Phone;
+        return $rows;
     } else {
         return null;
     }
@@ -189,10 +192,10 @@ function you_donated_history(stdClass $client, $period)
     $result = $db->getConn()->query($query);
     if ($result->num_rows) {
         $history = '';
-        foreach($result->fetch_all(MYSQLI_ASSOC) as $payment) {
-            $src = $db->getUser($payment['Sender_id']);
-            $date = $payment['DateTimeCreate'];
-            $history .= sprintf('<b>%d</b> рублей участник <b>+7%s</b> - %s<br>', $payment['Amount'], $src->Phone, $date);
+        while($payment = $result->fetch_object()) {
+            $src = $db->getUser($payment->Sender_id);
+            $date = $payment->DateTimeCreate;
+            $history .= sprintf('<b>%d</b> рублей участник <b>+7%s</b> - %s<br>', $payment->Amount, $src->Phone, $date);
         }
         return $history;
     } else {
@@ -214,10 +217,10 @@ function youself_donated_history(stdClass $client, $period)
     $result = $db->getConn()->query($query);
     if ($result->num_rows) {
         $history = '';
-        foreach($result->fetch_all(MYSQLI_ASSOC) as $payment) {
-            $dst = $db->getUser($payment['Dest_id']);
-            $date = $payment['DateTimeCreate'];
-            $history .= sprintf('<b>%d</b> рублей участнику <b>+7%s</b> - %s<br>', $payment['Amount'], $dst->Phone, $date);
+        while($payment = $result->fetch_object()) {
+            $dst = $db->getUser($payment->Dest_id);
+            $date = $payment->DateTimeCreate;
+            $history .= sprintf('<b>%d</b> рублей участнику <b>+7%s</b> - %s<br>', $payment->Amount, $dst->Phone, $date);
         }
         return $history;
     } else {
