@@ -11,7 +11,10 @@ switch ($_GET['act']) {
         $query = sprintf('SELECT * FROM `%susers`',
             $settings['db']['PREFIX']);
         $result = $db->getConn()->query($query);
-        echo json_encode((array)$result->fetch_fields());
+        $users = array();
+        while ($row = $result->fetch_assoc())
+            $users[] = $row;
+        echo json_encode($users);
         break;
 
     case 'status':
