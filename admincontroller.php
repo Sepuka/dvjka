@@ -11,7 +11,7 @@ switch ($_GET['act']) {
         $query = sprintf('SELECT * FROM `%susers`',
             $settings['db']['PREFIX']);
         $result = $db->getConn()->query($query);
-        echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+        echo json_encode((array)$result->fetch_fields());
         break;
 
     case 'status':
