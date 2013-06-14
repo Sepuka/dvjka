@@ -32,7 +32,7 @@ class DB
     }
 
     /**
-     * Создание нового пользователя или перезапись пароля у старого
+     * Создание нового пользователя
      * @param string $phone
      * @param string $password
      * @return boolean
@@ -47,8 +47,8 @@ class DB
                 $refId = $ref[0];
             }
         }
-        $query = sprintf("REPLACE `%susers` SET `Phone`='%s', `Password`='%s', `DateTimeCreate`=NOW(), `Ref`=%d, `Link`='%s'",
-            $this->settings['db']['PREFIX'], $phone, $password, (isset($refId)) ? $refId : null, str_pad(mt_rand(111, 99999999), 8, 0, STR_PAD_LEFT));
+        $query = sprintf("INSERT INTO `%susers` SET `Phone`='%s', `Password`='%s', `DateTimeCreate`=NOW(), `Ref`=%s, `Link`='%s'",
+            $this->settings['db']['PREFIX'], $phone, $password, (isset($refId)) ? $refId : 'null', str_pad(mt_rand(111, 99999999), 8, 0, STR_PAD_LEFT));
         return $this->_conn->query($query);
     }
 

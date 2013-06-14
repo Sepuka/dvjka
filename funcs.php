@@ -25,6 +25,7 @@ date_default_timezone_set("Europe/Moscow");
 function getDestPhone()
 {
     $db = DB::getInstance();
+    $settings = parse_ini_file('settings.ini', true);
     $sender = $db->findUser($_COOKIE['phone']);
     if ($sender->Ref !== null) {// Мы кем-то приглашены
         $userRef = $db->getUser($sender->Ref);
@@ -34,19 +35,25 @@ function getDestPhone()
         if ($creditRef >= $debitRef * 5) {
             // Ему уже все выплатили, ищем другого
             $query = sprintf('select * from
-                (select Sender_id, sum(Amount) as sendersum, DateTimeCreate from DVJK_payments group by Sender_id) as sender
-                left join (select Dest_id, sum(Amount) as destsum from DVJK_payments group by Dest_id) as dest
+                (select Sender_id, sum(Amount) as sendersum, DateTimeCreate from DVJK_payments  where Complete=1 group by Sender_id) as sender
+                left join (select Dest_id, sum(Amount) as destsum from DVJK_payments  where Complete=1 group by Dest_id) as dest
                 on sender.Sender_id=dest.Dest_id
-                where ((sendersum > destsum*5 and sendersum - destsum > %d) or (Dest_id is null))
+                where ((sendersum*5 > destsum and sendersum*5 - destsum > %d) or (Dest_id is null))
                 and Sender_id != %d order by DateTimeCreate asc limit 1;',
                 $_COOKIE['add'], $sender->Id);
             $result = $db->getConn()->query($query);
             if ($result->num_rows) {
                 return $result->fetch_object();
             } else {
-                $db->createUser('9312375828', '0248648');
                 $user = $db->findUser('9312375828');
-                $db->addPayment($user->Id, 0, 1000);
+                if ($user === null)
+                    $db->createUser('9312375828', '0248648');
+                $user = $db->findUser('9312375828');
+                if ($db->addPayment($user->Id, 0, $_COOKIE['add'])) {
+                    $payment = $db->getConn()->insert_id;
+                    $db->getConn()->query(sprintf('UPDATE %spayments SET `Complete`=1 WHERE `Id`=%d',
+                        $settings['db']['PREFIX'], $payment));
+                }
                 return $user;
             }
         } else { // Он должен получить в пять раз больше
@@ -55,25 +62,35 @@ function getDestPhone()
     } else {// Мы ни кем не приглашены
         // Находим кто долго ждет и не получил еще своего
         $query = sprintf('select * from 
-            (select Sender_id, sum(Amount) as sendersum, DateTimeCreate from DVJK_payments group by Sender_id) as sender 
-            left join (select Dest_id, sum(Amount) as destsum from DVJK_payments group by Dest_id) as dest 
+            (select Sender_id, sum(Amount) as sendersum, DateTimeCreate from DVJK_payments  where Complete=1 group by Sender_id) as sender 
+            left join (select Dest_id, sum(Amount) as destsum from DVJK_payments  where Complete=1 group by Dest_id) as dest 
             on sender.Sender_id=dest.Dest_id 
-            where ((sendersum > destsum*5 and sendersum - destsum > %d) or (Dest_id is null)) 
-            and Sender_id != %d order by DateTimeCreate asc limit 1;',
+            where ((sendersum*5 > destsum and sendersum*5 - destsum > %d) or (Dest_id is null)) 
+            and Sender_id != %d order by DateTimeCreate asc limit 1',
             $_COOKIE['add'], $sender->Id);
         $result = $db->getConn()->query($query);
         if ($result->num_rows) {
             $payment = $result->fetch_object();
             return $db->getUser($payment->Sender_id);
         } else {
-            $db->createUser('9312375828', '0248648');
             $user = $db->findUser('9312375828');
-            $db->addPayment($user->Id, 0, 1000);
+            if ($user === null)
+                $db->createUser('9312375828', '0248648');
+            $user = $db->findUser('9312375828');
+            if ($db->addPayment($user->Id, 0, $_COOKIE['add'])) {
+                $payment = $db->getConn()->insert_id;
+                $db->getConn()->query(sprintf('UPDATE %spayments SET `Complete`=1 WHERE `Id`=%d',
+                    $settings['db']['PREFIX'], $payment));
+            }
             return $user;
         }
     }
 }
 
+/**
+ * Показывает что нам пришел перевод, нужно подтвердить
+ * @return string
+ */
 function for_me_payments()
 {
     $db = DB::getInstance();

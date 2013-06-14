@@ -39,7 +39,7 @@ class GetPass
     {
         $db = DB::getInstance();
         $settings = parse_ini_file('../settings.ini', true);
-        $testMode = ($settings['sms']['demo'] == 'true') ? true : false;
+        $testMode = ($settings['sms']['demo'] == '1') ? true : false;
         $sms = new MainSMS($settings['sms']['project'], $settings['sms']['apiKey'], false, $testMode);
         $user = $db->findUser($phone);
         if ($user === null) {

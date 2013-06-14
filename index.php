@@ -32,19 +32,25 @@ if (! empty($_COOKIE['phone'])) {
                     exit();
                 }
                 $destUser = $db->getUser($payment->Dest_id);
+            } else {
+                // Нажал что не совершал и платеж был удален, а мы его потом разблокировали
+                setcookie('lox', false, time(), '/');
+                setcookie('add', false, time(), '/');
+                Header('Location: http://'. $settings['site']['host'], true, 302);
+                exit();
             }
         }
         $index = str_replace(
-            array('{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
+            array('{PHONE}', '{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
                 '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
-            array($destUser->Phone, date('d.m.Y H:i'), $_COOKIE['add'],
+            array($_COOKIE['phone'], $destUser->Phone, date('d.m.Y H:i'), $_COOKIE['add'],
                 $youself_donated, $you_donated, $ref),
             $index);
     } else {
         $index = file_get_contents('tmpl/index.tmpl');
         $index = str_replace(
-            array('{PHONE}', '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
-            array($_COOKIE['phone'], $youself_donated, $you_donated, $ref),
+            array('{PHONE}', '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}', '{U}'),
+            array($_COOKIE['phone'], $youself_donated, $you_donated, $ref, $settings['admin']['admin']),
             $index);
     }
 } else {
@@ -52,6 +58,7 @@ if (! empty($_COOKIE['phone'])) {
     if (! empty($_GET['ref'])) {
         setcookie('ref', $_GET['ref'], time() + (int)$settings['site']['savetime'], '/');
     }
+    $you_donated = $youself_donated = '';
 }
 
 $index = str_replace(

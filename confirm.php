@@ -37,7 +37,27 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
             $result = $db->getConn()->query($query);
             break;
 
+        // Я не платил
+        case 'imnotpay':
+            if (! empty($_COOKIE['lox'])) {
+                $db->getConn()->query(sprintf('DELETE FROM `%spayments` WHERE `Id`=%d', $settings['db']['PREFIX'], $_COOKIE['lox']));
+            }
+            $query = sprintf('UPDATE `%susers` SET `Enabled`=0 WHERE `Id`=%d', $settings['db']['PREFIX'], $sender->Id);
+            $db->getConn()->query($query);
+            break;
+
         default:
+            // Реакция на clean
+            $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=0 order by Id asc',
+                $settings['db']['PREFIX'], $sender->Id);
+            $result = $db->getConn()->query($query);
+            // Если есть платежи в нашу сторону и мы говорим clean, то источник блокируется
+            if ($result->num_rows) {
+                $payment = $result->fetch_object();
+                $sender = $db->getUser($payment->Sender_id);
+                $db->getConn()->query(sprintf('DELETE FROM `%spayments` WHERE `Id`=%d', $settings['db']['PREFIX'], $payment->Id));
+            }
+            // В противном случае клиент нажал кнопку "Я не совершал платеж"
             $query = sprintf('UPDATE `%susers` SET `Enabled`=0 WHERE `Id`=%d', $settings['db']['PREFIX'], $sender->Id);
             $db->getConn()->query($query);
             break;
