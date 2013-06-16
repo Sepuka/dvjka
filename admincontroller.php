@@ -37,8 +37,8 @@ switch ($_GET['act']) {
                 $user = $db->findUser($_POST['user']);
             if ($db->addPayment($user->Id, 0, $_POST['sum'])) {
                 $payment = $db->getConn()->insert_id;
-                $db->getConn()->query(sprintf('UPDATE %spayments SET `Complete`=1 WHERE `Id`=%d',
-                    $settings['db']['PREFIX'], $payment));
+                $db->getConn()->query(sprintf('UPDATE %spayments SET `Complete`=1, `DateTimeCreate`="%s" WHERE `Id`=%d',
+                    $settings['db']['PREFIX'], $payment, date('Y-m-d H:i:s', strtotime($_POST['date']))));
             }
         }
         break;
