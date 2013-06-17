@@ -38,8 +38,14 @@ switch ($_GET['act']) {
             if ($db->addPayment($user->Id, 0, $_POST['sum'])) {
                 $payment = $db->getConn()->insert_id;
                 $db->getConn()->query(sprintf('UPDATE %spayments SET `Complete`=1, `DateTimeCreate`="%s" WHERE `Id`=%d',
-                    $settings['db']['PREFIX'], $payment, date('Y-m-d H:i:s', strtotime($_POST['date']))));
+                    $settings['db']['PREFIX'], date('Y-m-d H:i:s', strtotime($_POST['date'])), $payment));
             }
+            $query = 'select * from DVJK_users left join DVJK_payments on DVJK_users.Id = DVJK_payments.Sender_id;';
+            $result = $db->getConn()->query($query);
+            $users = array();
+            while ($row = $result->fetch_assoc())
+                $users[] = $row;
+            echo json_encode($users);
         }
         break;
 }
