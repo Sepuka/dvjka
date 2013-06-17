@@ -1,0 +1,136 @@
+* { position: relative; outline: none; margin: 0; padding: 0; }
+* { box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; -ms-box-sizing: border-box; }
+* { font-family: Tahoma, Verdana, Arial, Helvetica, Geneva, sans-serif; }
+
+img { border: none; }
+
+textarea, input[type='text'], input[type='password'] { font-size: 11px; line-height: 13px; padding: 5px; border: 1px solid #666; border-radius: 2px; }
+button, .button { display: inline-block; 
+background-color: #FF6E02;
+background-image: linear-gradient(to bottom, #FFB400 0%, #FF6E02 100%); 
+background-image: -webkit-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+background-image: -ms-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+-ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFB400, endColorstr=#FF6E02)';
+color: #000; 
+font-size: 11px; line-height: 13px; text-decoration: none; 
+padding: 10px 20px 10px 20px;
+border: 1px solid #FF6E02;
+border-radius: 2px; cursor: pointer;
+text-shadow: #FFB400 0px 1px 0px;
+box-shadow: none;
+}
+
+button:hover, .button:hover {
+/*
+background-color: #FFB400;
+background-image: linear-gradient(to bottom, #FF6E02 0%, #FFB400 100%); 
+background-image: -webkit-linear-gradient(top, #FF6E02 0%, #FFB400 100%); 
+background-image: -ms-linear-gradient(top, #FF6E02 0%, #FFB400 100%); 
+-ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#FF6E02, endColorstr=#FFB400)';
+*/
+box-shadow: rgba(0,0,0,0.25) 0px 2px 2px;
+top: -1px;
+}
+button:active, .button:active { 
+background-color: #FFB400;
+background-image: linear-gradient(to bottom, #FF6E02 0%, #FFB400 100%); 
+background-image: -webkit-linear-gradient(top, #FF6E02 0%, #FFB400 100%); 
+background-image: -ms-linear-gradient(top, #FF6E02 0%, #FFB400 100%); 
+-ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#FF6E02, endColorstr=#FFB400)';
+box-shadow: none;
+top: inherit;
+}
+
+button:disabled { background: #999; color: #111; text-shadow: none; border-color: #666; }
+
+button.block, .button.block { display: block; }
+
+a { color: #000; text-decoration: underline; }
+a:hover { text-decoration: none; }
+
+.page { min-width: 320px; max-width: 775px; margin: auto; font-size: 11px; line-height: 16px; }
+
+body { background: #f7f7f7 url(/web/20130427002249//tpl/css/img/bg_gray.gif) repeat center top; }
+
+.footer { padding: 10px 10px 10px 10px; text-align: right; color: #666; line-height: 16px; }
+.footer>* { margin: 0 10px 0 10px; white-space: nowrap; }
+
+.main { display: block; width: 100%; }
+.main_l { display: block; width: 120px; position: absolute; top: 0px; left: 100%; padding-top: 10px; }
+.main_r { display: block; }
+
+.main_l .logo { display: block; clear: both; width: 120px; height: 78px;
+background-color: #FF6E02;
+background-image: linear-gradient(to bottom, #FFB400 0%, #FF6E02 100%); 
+background-image: -webkit-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+background-image: -ms-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+-ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFB400, endColorstr=#FF6E02)';
+border-radius: 0 5px 5px 0;
+}
+.main_l .keysbox { display: block; width: 120px; padding: 10px 0 10px 0; text-align: center; }
+.main_l .keysbox>* { display: inline-block; text-align: center; clear: both; margin-top: 10px; opacity: 0.75; text-decoration: none; }
+.main_l .keysbox>*:hover { opacity: 1; }
+
+/*.main_l { display: none; }*/
+
+.main_r .contentbox { background: #FFF; box-shadow: rgba(0,0,0,0.25) 0px 0px 10px; min-height: 180px; }
+
+.main_r .content { padding: 20px; }
+
+ul.topline { display: block; list-style: none; padding: 0px 15px 0px 15px; text-align: left; }
+ul.topline>li { display: inline-block; line-height: 16px; vertical-align: bottom; padding: 5px 5px 5px 5px; }
+ul.topline>li>i { vertical-align: bottom; }
+
+ul.mainmenu { display: block; list-style: none; background: #111;
+background-color: #FF6E02;
+background-image: linear-gradient(to bottom, #FFB400 0%, #FF6E02 100%); 
+background-image: -webkit-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+background-image: -ms-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+-ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFB400, endColorstr=#FF6E02)';
+padding: 10px 10px 0px 10px;
+line-height: 16px;
+}
+ul.mainmenu>li { display: inline-block; }
+ul.mainmenu>li>a { display: inline-block; padding: 5px 10px 15px 10px; border-radius: 2px 2px 0 0; text-decoration: none; color: #FFF; }
+ul.mainmenu>li.current>a { background: #FFF; color: #111; }
+
+
+ul.tabs { display: inline-block; list-style: none; }
+ul.tabs>li { display: inline-block; line-height: 16px; }
+ul.tabs>li>a { display: block; padding: 5px 10px 5px 10px; text-decoration: none; background: #EEE; }
+ul.tabs>li:first-child>a { border-radius: 3px 0 0 3px; }
+ul.tabs>li:last-child>a { border-radius: 0 3px 3px 0; }
+ul.tabs>li.current>a {
+background-color: #FF6E02;
+background-image: linear-gradient(to bottom, #FFB400 0%, #FF6E02 100%); 
+background-image: -webkit-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+background-image: -ms-linear-gradient(top, #FFB400 0%, #FF6E02 100%); 
+-ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFB400, endColorstr=#FF6E02)';
+color: #FFF;
+}
+
+.intro { font-size: 11px; line-height: 16px; }
+.intro h1 { display: inline-block; font-size: 24px; line-height: 26px; font-weight: normal; }
+.intro h2 { display: inline-block; font-size: 18px; line-height: 20px; font-weight: normal; }
+
+.intro input[type='text'], .intro input[type='password'] { width: 200px; }
+
+.rowshead { padding: 10px 20px 10px 20px; font-weight: bold; margin-left: -20px; background: url(/tpl/css/img/lrh.png) no-repeat left center; }
+.rows { border: 1px solid #111; }
+.rows>.row { padding: 10px; border-bottom: 1px solid #111; }
+.rows>.row:last-child { border-bottom: none; }
+
+.buttonbox { margin-bottom: -5px; }
+.buttonbox .button { margin: 0px 5px 5px 0px; }
+
+.blockbuttonbox button, .blockbuttonbox .button { margin-bottom: 10px; }
+.blockbuttonbox button:last-child, .blockbuttonbox .button:last-child { margin-bottom: 0px; }
+
+
+
+i.ico16 { display: inline-block; width: 16px; height: 16px; background-image: url(/tpl/css/img/ico16.png); background-repeat: repeat; }
+i.ico16.ico16-logo { background-position: 0px 0px; }
+i.ico16.ico16-reg { background-position: -16px 0px; }
+i.ico16.ico16-out { background-position: -48px 0px; }
+i.ico16.ico16-in { background-position: -32px 0px; }
+

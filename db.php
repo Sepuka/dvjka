@@ -14,8 +14,10 @@ class DB
         $this->settings = parse_ini_file('settings.ini', true);
         $this->_conn = mysqli_connect($this->settings['db']['DBhost'], $this->settings['db']['DBuser'],
                 $this->settings['db']['DBpass'], $this->settings['db']['DBname']);
-        if (! $this->_conn || $this->_conn->connect_error) {
-            exit($this->_conn->connect_error);
+        if (! $this->_conn)
+            exit('Ошибка подключения к СУБД ' . print_r(error_get_last(), true));
+        if ($this->_conn->connect_error) {
+            exit('Ошибка подключения к СУБД ' . $this->_conn->connect_error);
         }
     }
 
