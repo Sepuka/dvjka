@@ -39,8 +39,9 @@ function getDestPhone()
                 left join (select Dest_id, sum(Amount) as destsum from DVJK_payments  where Complete=1 group by Dest_id) as dest
                 on sender.Sender_id=dest.Dest_id
                 where ((sendersum*5 > destsum and sendersum*5 - destsum > %d) or (Dest_id is null))
-                and Sender_id != %d order by DateTimeCreate asc limit 1;',
-                $_COOKIE['add'], $sender->Id);
+                and Sender_id != %d  and Sender_id not in (select Id from %susers where Enabled=0)
+                order by DateTimeCreate asc limit 1;',
+                $_COOKIE['add'], $sender->Id, $settings['db']['PREFIX']);
             $result = $db->getConn()->query($query);
             if ($result->num_rows) {
                 return $result->fetch_object();
@@ -66,8 +67,9 @@ function getDestPhone()
             left join (select Dest_id, sum(Amount) as destsum from DVJK_payments  where Complete=1 group by Dest_id) as dest 
             on sender.Sender_id=dest.Dest_id 
             where ((sendersum*5 > destsum and sendersum*5 - destsum > %d) or (Dest_id is null)) 
-            and Sender_id != %d order by DateTimeCreate asc limit 1',
-            $_COOKIE['add'], $sender->Id);
+            and Sender_id != %d and Sender_id not in (select Id from %susers where Enabled=0)
+            order by DateTimeCreate asc limit 1',
+            $_COOKIE['add'], $sender->Id, $settings['db']['PREFIX']);
         $result = $db->getConn()->query($query);
         if ($result->num_rows) {
             $payment = $result->fetch_object();
