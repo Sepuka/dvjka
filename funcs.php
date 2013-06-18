@@ -102,7 +102,7 @@ function for_me_payments()
     $sender = $db->findUser($_COOKIE['phone']);
     if (! $sender)
         return 'Нет пожертвований ожидающих подтверждения.';
-    $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=0 order by Id asc',
+    $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=2 order by Id asc',
         $settings['db']['PREFIX'], $sender->Id);
     $result = $db->getConn()->query($query);
     if ($result->num_rows) {

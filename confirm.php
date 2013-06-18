@@ -27,12 +27,16 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
                 $destClient = $db->getUser($payment->Dest_id);
                 $text = sprintf($settings['sms']['textconfirm'], $_COOKIE['add']);
                 $sms->sendSMS($destClient->Phone, $text, $settings['sms']['sender']);
+                // Пометим перевод как отправленный для подтверждения получателем
+                $query = sprintf('UPDATE `%spayments` SET `Complete`=2 WHERE `Id`=%d',
+                    $settings['db']['PREFIX'], $payment->Id);
+                $db->getConn()->query($query);
             }
             break;
 
         // Я подтверждаю получение перевода
         case 'obtained':
-            $query = sprintf('UPDATE %spayments SET `Complete`=1 where `Dest_id`=%d and `Complete`=0 LIMIT 1',
+            $query = sprintf('UPDATE `%spayments` SET `Complete`=1 where `Dest_id`=%d and `Complete`=2 LIMIT 1',
                 $settings['db']['PREFIX'], $sender->Id);
             $result = $db->getConn()->query($query);
             break;

@@ -50,7 +50,7 @@ a:hover { text-decoration: none; }
 
 .page { min-width: 320px; max-width: 775px; margin: auto; font-size: 11px; line-height: 16px; }
 
-body { background: #f7f7f7 url(/web/20130427002249//tpl/css/img/bg_gray.gif) repeat center top; }
+body { background: #f7f7f7 url(/tpl/css/img/bg_gray.gif) repeat center top; }
 
 .footer { padding: 10px 10px 10px 10px; text-align: right; color: #666; line-height: 16px; }
 .footer>* { margin: 0 10px 0 10px; white-space: nowrap; }
