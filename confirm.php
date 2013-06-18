@@ -52,18 +52,18 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
 
         default:
             // Реакция на clean
-            $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=0 order by Id asc',
+            $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=2 order by Id asc',
                 $settings['db']['PREFIX'], $sender->Id);
             $result = $db->getConn()->query($query);
             // Если есть платежи в нашу сторону и мы говорим clean, то источник блокируется
             if ($result->num_rows) {
                 $payment = $result->fetch_object();
                 $sender = $db->getUser($payment->Sender_id);
-                $db->getConn()->query(sprintf('DELETE FROM `%spayments` WHERE `Id`=%d', $settings['db']['PREFIX'], $payment->Id));
+                // Ставим признак мошенничества
+                $query = sprintf('UPDATE `%spayments` SET `Complete`=3 WHERE `Id`=%d',
+                    $settings['db']['PREFIX'], $payment->Id);
+                $db->getConn()->query($query);
             }
-            // В противном случае клиент нажал кнопку "Я не совершал платеж"
-            $query = sprintf('UPDATE `%susers` SET `Enabled`=0 WHERE `Id`=%d', $settings['db']['PREFIX'], $sender->Id);
-            $db->getConn()->query($query);
             break;
     }
 }

@@ -14,15 +14,29 @@ switch ($argv[1])
         $query = sprintf('UPDATE `DVJK_users` LEFT JOIN `%spayments` on `%susers`.`Id`=`%spayments`.`Sender_id`
             SET `Enabled`=0
             WHERE (TIMESTAMPDIFF(SECOND, `%susers`.`DateTimeCreate`, NOW()) > %s AND `%spayments`.`Id` IS NULL)
-            OR (`%spayments`.`Complete`=0 AND TIMESTAMPDIFF(SECOND, `%spayments`.`DateTimeCreate`, NOW()) > %s);',
+            OR (`%spayments`.`Complete` IN (0,2) AND TIMESTAMPDIFF(SECOND, `%spayments`.`DateTimeCreate`, NOW()) > %s);',
             $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['db']['PREFIX'],
             $settings['db']['PREFIX'], $settings['cron']['noPaymentClientTime'], $settings['db']['PREFIX'],
             $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['cron']['noPaymentClientTime']);
         $db->getConn()->query($query);
         $query = sprintf('DELETE FROM `%spayments` WHERE TIMESTAMPDIFF(SECOND, `%spayments`.`DateTimeCreate`, NOW()) > %s
-            AND `%spayments`.`Complete`=0;',
+            AND `%spayments`.`Complete` IN (0,2);',
             $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['cron']['noPaymentClientTime'],
             $settings['db']['PREFIX']);
+        $db->getConn()->query($query);
+        break;
+
+    // Мошенничество (заявленной оплаты не было)
+    case 'fraudster':
+        $query = sprintf('UPDATE `DVJK_users` LEFT JOIN `%spayments` on `%susers`.`Id`=`%spayments`.`Sender_id`
+            SET `Enabled`=0
+            WHERE `%spayments`.`Complete` = 3 AND TIMESTAMPDIFF(SECOND, `%spayments`.`DateTimeCreate`, NOW()) > %s;',
+            $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['db']['PREFIX'],
+            $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['cron']['fraudster']);
+        $db->getConn()->query($query);
+        $query = sprintf('DELETE FROM `%spayments` WHERE TIMESTAMPDIFF(SECOND, `%spayments`.`DateTimeCreate`, NOW()) > %s
+            AND `%spayments`.`Complete` = 3;',
+            $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['cron']['fraudster']);
         $db->getConn()->query($query);
         break;
 
