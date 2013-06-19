@@ -45,6 +45,9 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
         case 'imnotpay':
             if (! empty($_COOKIE['lox'])) {
                 $db->getConn()->query(sprintf('DELETE FROM `%spayments` WHERE `Id`=%d', $settings['db']['PREFIX'], $_COOKIE['lox']));
+            } else {
+                $db->getConn()->query(sprintf('DELETE FROM `%spayments` WHERE `Sender_id`=%d and `Complete` IN (2,3) order by Id asc',
+                        $settings['db']['PREFIX'], $sender->Id));
             }
             $query = sprintf('UPDATE `%susers` SET `Enabled`=0 WHERE `Id`=%d', $settings['db']['PREFIX'], $sender->Id);
             $db->getConn()->query($query);
