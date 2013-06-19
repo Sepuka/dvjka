@@ -36,7 +36,7 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
 
         // Я подтверждаю получение перевода
         case 'obtained':
-            $query = sprintf('UPDATE `%spayments` SET `Complete`=1 where `Dest_id`=%d and `Complete`=2 LIMIT 1',
+            $query = sprintf('UPDATE `%spayments` SET `Complete`=1 where `Dest_id`=%d and `Complete` IN (2,3) LIMIT 1',
                 $settings['db']['PREFIX'], $sender->Id);
             $result = $db->getConn()->query($query);
             break;

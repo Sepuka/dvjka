@@ -36,7 +36,7 @@ switch ($argv[1])
         $db->getConn()->query($query);
         $query = sprintf('DELETE FROM `%spayments` WHERE TIMESTAMPDIFF(SECOND, `%spayments`.`DateTimeCreate`, NOW()) > %s
             AND `%spayments`.`Complete` = 3;',
-            $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['cron']['fraudster']);
+            $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['cron']['fraudster'], $settings['db']['PREFIX']);
         $db->getConn()->query($query);
         break;
 
