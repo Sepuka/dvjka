@@ -110,7 +110,7 @@ function for_me_payments()
         $srcUser = $db->getUser($payment->Sender_id);
         return sprintf('Сумма <b>%s</b> рублей<br>'.
             'QIWI-кошелек с которого должен прийти платеж: <b>+7%s</b><br>'.
-            'Статус: <b>Перевод совершен и ожидает Вашего подтверждения</b> - %s<br>'.
+            'Статус: <b>%s</b> - %s<br>'.
             'Вам необходимо в течение 24 часов подтвердить или опровергнуть получение перевода со счета отправителя.'.
             'Проверьте раздел отчетов своего QIWI-кошелька, если перевод с кошелька отправителя есть - нажмите "Платеж пришел",'.
             'если платежа нет - нажмите "Платеж не пришел". Перевод будет автоматически подтвержден если вы не подтвердите или '.
@@ -118,7 +118,8 @@ function for_me_payments()
             '<br><div class="buttonbox">'.
             '<a class="button" href="/confirm/obtained" onclick="return dvjk.confirm(\"Вы уверены?\");">Платеж пришел</a>'.
             '<a class="button" href="/confirm/clean" onclick="return dvjk.confirm(\"Вы уверены?\");">Платеж не пришел - попытка мошенничества</a></div>',
-            $payment->Amount, $srcUser->Phone, $payment->DateTimeCreate);
+            $payment->Amount, $srcUser->Phone, ($payment->Complete == 2) ? 'Перевод совершен и ожидает Вашего подтверждения' : 'Платеж не пришел - попытка мошенничества',
+            $payment->DateTimeCreate);
     } else
         return 'Нет пожертвований ожидающих подтверждения.';
 }
