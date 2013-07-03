@@ -9,4 +9,4 @@ header('Content-Type: application/json; charset=utf-8');
 setcookie('phone', false, time(), '/');
 setcookie('add', false, time(), '/');
 setcookie('lox', false, time(), '/');
-Header('Location: http://'. $settings['site']['host'], true, 302);
+Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
