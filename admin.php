@@ -1,6 +1,7 @@
 <?php
 $settings = parse_ini_file('settings.ini', true);
-if (! empty($_COOKIE['phone']) && $settings['admin']['admin'] == $_COOKIE['phone']) {
+$admins = explode(',', $settings['admin']['admin']);
+if (! empty($_COOKIE['phone']) && in_array($_COOKIE['phone'], $admins)) {
     echo file_get_contents('tmpl/admin.tmpl');
 } else
-    Header('Location: http://'. $settings['site']['host'], true, 302);
+    Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);

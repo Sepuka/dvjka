@@ -2,7 +2,8 @@
 require_once __DIR__ . '/db.php';
 $db = DB::getInstance();
 $settings = parse_ini_file('settings.ini', true);
-if ((empty($_COOKIE['phone']) || $settings['admin']['admin'] != $_COOKIE['phone']) && (! empty($_GET['act']))) {
+$admins = explode(',', $settings['admin']['admin']);
+if ((empty($_COOKIE['phone']) || ! in_array($_COOKIE['phone'], $admins)) && (! empty($_GET['act']))) {
     exit('xyi');
 }
 
