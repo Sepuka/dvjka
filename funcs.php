@@ -10,7 +10,7 @@ if (! empty($_COOKIE['phone'])) {
 
     if ($sender && $sender->Enabled == 0) {
         $settings = parse_ini_file('settings.ini', true);
-        Header('Location: http://'. $_SERVER['HTTP_HOST'] . '/lock', true, 302);
+        Header('Location: http://'. $settings['site']['host'] . '/lock', true, 302);
         exit();
     }
 }

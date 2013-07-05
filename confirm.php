@@ -9,7 +9,7 @@ require_once __DIR__ . '/sms.php';
 $settings = parse_ini_file('settings.ini', true);
 $db = DB::getInstance();
 
-Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
+Header('Location: http://'. $settings['site']['host'], true, 302);
 
 if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
     $sender = $db->findUser($_COOKIE['phone']);

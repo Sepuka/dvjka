@@ -28,7 +28,7 @@ if (! empty($_COOKIE['phone'])) {
                 if ($payment->Complete) {// Если платеж подтвержден уходим на обычную главную
                     setcookie('lox', false, time(), '/');
                     setcookie('add', false, time(), '/');
-                    Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
+                    Header('Location: http://'. $settings['site']['host'], true, 302);
                     exit();
                 }
                 $destUser = $db->getUser($payment->Dest_id);
@@ -36,7 +36,7 @@ if (! empty($_COOKIE['phone'])) {
                 // Нажал что не совершал и платеж был удален, а мы его потом разблокировали
                 setcookie('lox', false, time(), '/');
                 setcookie('add', false, time(), '/');
-                Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
+                Header('Location: http://'. $settings['site']['host'], true, 302);
                 exit();
             }
         }
@@ -63,7 +63,7 @@ if (! empty($_COOKIE['phone'])) {
 
 $index = str_replace(
         array('{HOST}', '{IP}', '{MEANWHILE}', '{FOR_ME_PAYMENTS}', '{MY_PAYMENTS}', '{LINK}', '{WAIT_PAY}'),
-        array($_SERVER['HTTP_HOST'], $_SERVER['REMOTE_ADDR'], meanwhile(),
+        array($settings['site']['host'], $_SERVER['REMOTE_ADDR'], meanwhile(),
             for_me_payments(), my_payments(), (isset($sender) ? $sender->Link : ''), $youself_donated * 5 - $you_donated),
         $index);
 
