@@ -32,7 +32,7 @@ function getDestPhone()
         $creditRef = you_donated($userRef); // ему пожертововали
         $debitRef = youself_donated($userRef);// он пожертвовал
         // Если сумма пополнений того кто нас пригласил больше в 5 раз чем сумма его пожертвований
-        if ($creditRef >= $debitRef * 5) {
+        if ($creditRef >= $debitRef * 5 || $userRef->Enabled == 0) {
             // Ему уже все выплатили, ищем другого
             $query = sprintf('select * from
                 (select Sender_id, sum(Amount) as sendersum, DateTimeCreate from DVJK_payments  where Complete=1 group by Sender_id) as sender
