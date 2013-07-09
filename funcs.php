@@ -139,7 +139,31 @@ function my_payments()
     $sender = $db->findUser($_COOKIE['phone']);
     if (! $sender)
         return 'Нет пожертвований ожидающих подтверждения.';
-    $query = sprintf('SELECT * FROM %spayments where `Sender_id`=%d and Complete IN (2,3) order by Id asc',
+    // Сначала поищем обвиненные в мошенничестве платежи
+    $query = sprintf('SELECT * FROM %spayments where `Sender_id`=%d and Complete = 3 order by Id asc',
+        $settings['db']['PREFIX'], $sender->Id);
+    $result = $db->getConn()->query($query);
+    if ($result->num_rows) {
+        $payment = $result->fetch_object();
+        $dstUser = $db->getUser($payment->Dest_id);
+        return sprintf('Сумма <b>%s</b> рублей<br>'.
+            'QIWI-кошелек получателя: <b>+7%s</b><br>'.
+            'Статус: <b>%s</b> - %s<br>'.
+            'Получатель платежа обвинил Вас в попытке мошенничества (Вы обозначили выполненным платеж который не совершили). '.
+            'Если вы действительно совершили платеж - возможно это просто недоразумение, Вы можете связаться с получателем '.
+            'платежа (позвонить или отправить SMS) и попросить перепроверить кошелек, или предоставьте в техподдержку все '.
+            'данные из чека по этой операций для проверки. Данные чека можно получить в разделе отчетов QIWI Кошелька '.
+            '(по ссылке «Распечатать чек» справа от операций). Если получатель платежа не подтвердит перевод и Вы не предоставите '.
+            'достоверные данные из чека в техподдержку в течение 48 часов с момента обвинения Вас в мошенничестве – Ваш аккаунт '.
+            '(QIWI Кошелек / номер телефона) будет заблокирован и удален из очереди. Если Вы заведомо не делали платеж – у '.
+            'Вас еще есть время его сделать и попросить получателя перепроверить кошелек.'.
+            '<br><div class="buttonbox">'.
+            '<a class="button" href="/confirm/imnotpay" onclick="return dvjk.confirm(\"Вы уверены?\");">Я не совершал этот перевод и совершать не буду</a></div>',
+            $payment->Amount, $dstUser->Phone, 'Платеж не пришел - попытка мошенничества',
+                $payment->DateTimeCreate);
+    }
+    // Затем поищем платежи ожидающие подтверждения
+    $query = sprintf('SELECT * FROM %spayments where `Sender_id`=%d and Complete = 2 order by Id asc',
         $settings['db']['PREFIX'], $sender->Id);
     $result = $db->getConn()->query($query);
     if ($result->num_rows) {
@@ -158,7 +182,7 @@ function my_payments()
             'Ваш аккаунт (QIWI Кошелек / номер телефона) будет заблокирован и удален из очереди.'.
             '<br><div class="buttonbox">'.
             '<a class="button" href="/confirm/imnotpay" onclick="return dvjk.confirm(\"Вы уверены?\");">Я не совершал этот перевод и совершать не буду</a></div>',
-            $payment->Amount, $dstUser->Phone, ($payment->Complete == 2) ? 'Перевод совершен и ожидает подтверждения' : 'Платеж не пришел - попытка мошенничества',
+            $payment->Amount, $dstUser->Phone, 'Перевод совершен и ожидает подтверждения',
                 $payment->DateTimeCreate);
     } else
         return 'Нет пожертвований ожидающих подтверждения.';
