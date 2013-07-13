@@ -36,7 +36,7 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
 
         // Я подтверждаю получение перевода
         case 'obtained':
-            $query = sprintf('UPDATE `%spayments` SET `Complete`=1 where `Dest_id`=%d and `Complete` IN (2,3) LIMIT 1',
+            $query = sprintf('UPDATE `%spayments` SET `Complete`=1, DateTimeCreate=now() where `Dest_id`=%d and `Complete` IN (2,3) LIMIT 1',
                 $settings['db']['PREFIX'], $sender->Id);
             $result = $db->getConn()->query($query);
             break;
@@ -63,7 +63,7 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
                 $payment = $result->fetch_object();
                 $sender = $db->getUser($payment->Sender_id);
                 // Ставим признак мошенничества
-                $query = sprintf('UPDATE `%spayments` SET `Complete`=3 WHERE `Id`=%d',
+                $query = sprintf('UPDATE `%spayments` SET `Complete`=3, DateTimeCreate=now() WHERE `Id`=%d',
                     $settings['db']['PREFIX'], $payment->Id);
                 $db->getConn()->query($query);
             }
