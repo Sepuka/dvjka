@@ -40,7 +40,7 @@ if (! empty($_COOKIE['phone'])) {
                 exit();
             }
         }
-        $payment = $db->getPayment($db->getConn()->insert_id);
+        $payment = $db->getPayment((array_key_exists('lox', $_COOKIE)) ? $_COOKIE['lox'] : $db->getConn()->insert_id);
         $date = ($payment) ? date('d.m.Y H:i', strtotime($payment->DateTimeCreate)) : date('d.m.Y H:i');
         $index = str_replace(
             array('{PHONE}', '{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
