@@ -12,7 +12,7 @@ if (! empty($_COOKIE['phone'])) {
             youself_donated($sender), you_donated($sender), getRef($sender), $sender->Link),
         $index);
 } else {
-    Header('Location: http://'. $settings['site']['host'], true, 302);
+    Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
 }
 
 echo $index;

@@ -27,7 +27,7 @@ if (! empty($_COOKIE['phone'])) {
             $sender->Link),
         $index);
 } else {
-    Header('Location: http://'. HOST, true, 302);
+    Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
 }
 
 echo $index;

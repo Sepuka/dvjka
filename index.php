@@ -28,7 +28,7 @@ if (! empty($_COOKIE['phone'])) {
                 if ($payment->Complete) {// Если платеж подтвержден уходим на обычную главную
                     setcookie('lox', false, time(), '/');
                     setcookie('add', false, time(), '/');
-                    Header('Location: http://'. $settings['site']['host'], true, 302);
+                    Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
                     exit();
                 }
                 $destUser = $db->getUser($payment->Dest_id);
@@ -36,7 +36,7 @@ if (! empty($_COOKIE['phone'])) {
                 // Нажал что не совершал и платеж был удален, а мы его потом разблокировали
                 setcookie('lox', false, time(), '/');
                 setcookie('add', false, time(), '/');
-                Header('Location: http://'. $settings['site']['host'], true, 302);
+                Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
                 exit();
             }
         }
