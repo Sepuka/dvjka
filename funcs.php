@@ -102,7 +102,8 @@ function for_me_payments()
     $sender = $db->findUser($_COOKIE['phone']);
     if (! $sender)
         return 'Нет пожертвований ожидающих подтверждения.';
-    $query = sprintf('SELECT * FROM `%spayments` JOIN `%susers` ON `%spayments`.`Sender_id`=`%susers`.`Id`
+    $query = sprintf('SELECT Sender_id, Amount, Phone, Complete, DVJK_payments.DateTimeCreate 
+        FROM `%spayments` JOIN `%susers` ON `%spayments`.`Sender_id`=`%susers`.`Id`
         where `Dest_id`=%d and Complete IN (2,3) and `Enabled`=1 order by `%spayments`.`Id` asc',
         $settings['db']['PREFIX'], $settings['db']['PREFIX'], $settings['db']['PREFIX'],
             $settings['db']['PREFIX'], $sender->Id, $settings['db']['PREFIX']);
