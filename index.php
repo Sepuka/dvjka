@@ -40,10 +40,12 @@ if (! empty($_COOKIE['phone'])) {
                 exit();
             }
         }
+        $payment = $db->getPayment($db->getConn()->insert_id);
+        $date = ($payment) ? date('d.m.Y H:i', strtotime($payment->DateTimeCreate)) : date('d.m.Y H:i');
         $index = str_replace(
             array('{PHONE}', '{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
                 '{YOUSELF_DONATED}', '{4YOU_DONATED}', '{REF}'),
-            array($_COOKIE['phone'], $destUser->Phone, date('d.m.Y H:i'), $_COOKIE['add'],
+            array($_COOKIE['phone'], $destUser->Phone, $date, $_COOKIE['add'],
                 $youself_donated, $you_donated, $ref),
             $index);
     } else {
