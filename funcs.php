@@ -353,7 +353,7 @@ function rusmonth()
  */
 function meanwhile()
 {
-    $curdate = time();
+    $curdate = time() + 7200;
     $result = '';
     for ($i = 0; $i < 10; $i++) {
         $curdate = $curdate - (mt_rand(20, 60) * mt_rand(1, 4));
