@@ -22,25 +22,31 @@ if (! empty($_COOKIE['phone'])) {
             if ($db->addPayment($sender->Id, $destUser->Id, $_COOKIE['add']))
                 setcookie('lox', $db->getConn()->insert_id, time() + (int)$settings['site']['savetime'], '/');
         } else {//Уже заплатил
-            $index = file_get_contents('tmpl/rejection.tmpl');
             $payment = $db->getPayment($_COOKIE['lox']);
-            if ($payment) {
-                if ($payment->Complete) {// Если платеж подтвержден уходим на обычную главную
+            if ($payment && $payment->Complete == 2) {// нажал кнопку что заплатил
+                $index = file_get_contents('tmpl/rejection.tmpl');
+                if ($payment) {
+                    if ($payment->Complete) {// Если платеж подтвержден уходим на обычную главную
+                        setcookie('lox', false, time(), '/');
+                        setcookie('add', false, time(), '/');
+                        Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
+                        exit();
+                    }
+                    $destUser = $db->getUser($payment->Dest_id);
+                } else {
+                    // Нажал что не совершал и платеж был удален, а мы его потом разблокировали
                     setcookie('lox', false, time(), '/');
                     setcookie('add', false, time(), '/');
                     Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
                     exit();
                 }
-                $destUser = $db->getUser($payment->Dest_id);
             } else {
-                // Нажал что не совершал и платеж был удален, а мы его потом разблокировали
-                setcookie('lox', false, time(), '/');
-                setcookie('add', false, time(), '/');
-                Header('Location: http://'. $_SERVER['HTTP_HOST'], true, 302);
-                exit();
+                $index = file_get_contents('tmpl/'.$_COOKIE['add'].'.tmpl');
             }
         }
         $payment = $db->getPayment((array_key_exists('lox', $_COOKIE)) ? $_COOKIE['lox'] : $db->getConn()->insert_id);
+        if (!isset($destUser))
+            $destUser = $db->getUser($payment->Dest_id);
         $date = ($payment) ? date('d.m.Y H:i', strtotime($payment->DateTimeCreate)) : date('d.m.Y H:i');
         $index = str_replace(
             array('{PHONE}', '{DEST_PHONE}', '{TIME_PAYMENT}', '{SUM}',
