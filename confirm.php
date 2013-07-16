@@ -55,7 +55,7 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
 
         default:
             // Реакция на clean
-            $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete=2 order by Id asc',
+            $query = sprintf('SELECT * FROM %spayments where `Dest_id`=%d and Complete IN (0,2) order by Id asc',
                 $settings['db']['PREFIX'], $sender->Id);
             $result = $db->getConn()->query($query);
             // Если есть платежи в нашу сторону и мы говорим clean, то источник блокируется
