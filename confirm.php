@@ -50,6 +50,7 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
             } else {
                 $db->getConn()->query(sprintf('DELETE FROM `%spayments` WHERE `Sender_id`=%d and `Complete` IN (2,3) order by Id asc',
                         $settings['db']['PREFIX'], $sender->Id));
+                array_key_exists('add', $_COOKIE) && setcookie($_COOKIE['add']);
             }
             $query = sprintf('UPDATE `%susers` SET `Enabled`=0 WHERE `Id`=%d', $settings['db']['PREFIX'], $sender->Id);
             $db->getConn()->query($query);
