@@ -49,8 +49,8 @@ if ((! empty($_COOKIE['phone'])) && (! empty($_GET['act']))) {
                 $db->getConn()->query(sprintf('DELETE FROM `%spayments` WHERE `Sender_id`=%d and `Complete` IN (2,3) order by Id asc',
                         $settings['db']['PREFIX'], $sender->Id));
             }
-            setcookie('add', null, 0, '/');
-            setcookie('lox', null, 0, '/');
+            setcookie('add', null, time(), '/');
+            setcookie('lox', null, time(), '/');
             $query = sprintf('UPDATE `%susers` SET `Enabled`=0 WHERE `Id`=%d', $settings['db']['PREFIX'], $sender->Id);
             $db->getConn()->query($query);
             break;
