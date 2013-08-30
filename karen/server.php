@@ -28,6 +28,9 @@ if (array_key_exists('criterion', $_POST)) {
         case 'dia':
             echo getDia();
         break;
+        case 'searchTire':
+            echo searchTire();
+        break;
         default:
             header('wrong request', true, 400);
     }
@@ -99,4 +102,30 @@ function getDia()
         $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
     }
     return $row;
+}
+
+function searchTire()
+{
+    $allowParams = array('season' => '`tire_list`.`Season`', 'firm' => '`tire_mark`.`Name`',
+        'width' => '`tire_list`.`W`', 'profile' => '`tire_list`.`H`',
+        'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`');
+    $where = array();
+    foreach($_POST as $key => $value) {
+        if (! array_key_exists($key, $allowParams) || $value == '0')
+            continue;
+        $where[] = sprintf('%s="%s"', $allowParams[$key], $value);
+    }
+    $query = sprintf('select `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
+        . '`tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R` from tire_list '
+        . 'join tire_model on tire_list.ModelID=tire_model.ID '
+        . 'join tire_mark on tire_model.MarkID=tire_mark.ID '
+        . 'join tires on tire_list.ID=tires.TireID '
+        . '%s', ($where) ? 'where ' . implode('and', $where) : '');
+    $resource = mysql_query($query);
+    $row = '<table class="searchTire"><tr><th>сезон</th><th>фирма</th><th>ширина</th><th>профиль</th><th>жесткость</th><th>диаметр</th><th>скорость</th></tr>';
+    while($data = mysql_fetch_assoc($resource)) {
+        $row .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+            $data['Season'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed']);
+    }
+    return $row . '</table>';
 }

@@ -208,3 +208,7 @@ input[type="checkbox"] { width: 14px; height: 14px; margin-top: 5px; }
 
 #footer .copyright { min-height: 55px; padding-top: 15px; font-size: 11px; text-align: center; color: #5A5144; }
 #footer .copyright a { font-weight: bold; text-decoration: none; color: #AE341D; }
+
+.searchTire {
+    width: 920px;
+}

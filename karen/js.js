@@ -53,4 +53,23 @@ $(document).ready(function(){
             $("#dia").append(msg);
         }
     });
+
+    $('#searchTire').click(function() {
+        $.ajax({
+            type: "POST",
+            url: "server.php",
+            data: {
+                criterion: 'searchTire',
+                season: $("#season :selected").val(),
+                firm: $("#firm :selected").val(),
+                width: $("#width :selected").val(),
+                profile: $("#profile :selected").val(),
+                stiffness: $("#stiffness :selected").val(),
+                dia: $("#dia :selected").val()
+            },
+            success: function(msg){
+                $("#searchResult").html(msg);
+            }
+        });
+    });
 });
