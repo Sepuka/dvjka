@@ -108,12 +108,20 @@ function searchTire()
 {
     $allowParams = array('season' => '`tire_list`.`Season`', 'firm' => '`tire_mark`.`Name`',
         'width' => '`tire_list`.`W`', 'profile' => '`tire_list`.`H`',
-        'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`');
+        'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`',
+        'minPrice' => '`tires`.`Price1`', 'maxPrice' => '`tires`.`Price1`');
     $where = array();
     foreach($_POST as $key => $value) {
         if (! array_key_exists($key, $allowParams) || $value == '0')
             continue;
-        $where[] = sprintf('%s="%s"', $allowParams[$key], $value);
+        if ($key == 'minPrice') {
+            if (! empty($value)) $where[] = sprintf('`Price1` >= %s', (int)$value);
+            continue;
+        } elseif ($key == 'maxPrice') {
+            if (! empty($value)) $where[] = sprintf('`Price1` <= %s', (int)$value);
+            continue;
+        } else
+            $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
     $query = sprintf('select `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
         . '`tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R` from tire_list '

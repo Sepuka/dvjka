@@ -65,7 +65,9 @@ $(document).ready(function(){
                 width: $("#width :selected").val(),
                 profile: $("#profile :selected").val(),
                 stiffness: $("#stiffness :selected").val(),
-                dia: $("#dia :selected").val()
+                dia: $("#dia :selected").val(),
+                minPrice: $("#min1").val(),
+                maxPrice: $("#max1").val()
             },
             success: function(msg){
                 $("#searchResult").html(msg);
