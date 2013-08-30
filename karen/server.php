@@ -31,6 +31,18 @@ if (array_key_exists('criterion', $_POST)) {
         case 'searchTire':
             echo searchTire();
         break;
+        case 'firm2':
+            echo getFirm2();
+        break;
+        case 'model':
+            echo getModel($_POST['model']);
+        break;
+        case 'modification':
+            echo getModification($_POST['modification']);
+        break;
+        case 'searchAuto':
+            echo searchAuto();
+        break;
         default:
             header('wrong request', true, 400);
     }
@@ -134,6 +146,76 @@ function searchTire()
     while($data = mysql_fetch_assoc($resource)) {
         $row .= sprintf('<tr align="center"><td><img src="photo/%s.jpg" weight="50" height="50"></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
             $data['ID'], $data['Season'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed']);
+    }
+    return $row . '</table>';
+}
+
+function getFirm2()
+{
+    $query = 'select `ID`, `Name` from `auto_mark`';
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+    }
+    return $row;
+}
+
+function getModel($mark)
+{
+    $query = sprintf('select `ID`, `Name` from `auto_model` where `MarkID`=%d', $mark);
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+    }
+    return $row;
+}
+
+function getModification($model)
+{
+    $query = sprintf('select `ID`, `Name` from `auto_modification` where `ModelID`=%d', $model);
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+    }
+    return $row;
+}
+
+function searchAuto()
+{
+    $allowParams = array('season' => '`tire_list`.`Season`', 'firm' => '`auto_mark`.`Name`',
+        'model' => '`auto_model`.`Name`', 'modification' => '`auto_modification`.`Name`',
+        'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`',
+        'minPrice' => '`tires`.`Price1`', 'maxPrice' => '`tires`.`Price1`');
+    $where = array();
+    foreach($_POST as $key => $value) {
+        if (! array_key_exists($key, $allowParams) || $value == '0')
+            continue;
+        if ($key == 'minPrice') {
+            if (! empty($value)) $where[] = sprintf('`Price1` >= %s', (int)$value);
+            continue;
+        } elseif ($key == 'maxPrice') {
+            if (! empty($value)) $where[] = sprintf('`Price1` <= %s', (int)$value);
+            continue;
+        } else
+            $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
+    }
+    $query = sprintf('select `auto`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
+        . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
+        . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed` '
+        . 'from auto join auto_modification on auto.ModificationID=auto_modification.ID '
+        . 'join auto_model on auto_model.ID=auto_modification.ModelID '
+        . 'join auto_mark on auto_mark.ID=auto_model.MarkID '
+        . 'join auto_tires on auto_tires.ModificateionID=auto_modification.ID '
+        . 'join tire_list on tire_list.ID=auto_tires.TireID '
+        . '%s', ($where) ? 'where ' . implode('and', $where) : '');
+    $resource = mysql_query($query);
+    $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th></tr>';
+    while($data = mysql_fetch_assoc($resource)) {
+        $row .= sprintf('<tr align="center"><td><img src="photo/%s.jpg" weight="50" height="50"></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+            $data['ID'], $data['Season'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed']);
     }
     return $row . '</table>';
 }

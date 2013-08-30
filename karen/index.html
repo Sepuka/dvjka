@@ -96,7 +96,7 @@
 				<div class="content">
 					<div class="patch"></div>
 					<div class="title2">Подбор шин по авто</div>
-					<form method="post" action="#" class="form">
+					<form class="form">
 						<div class="box-l">
 							<label for="firm2" class="blocks">Марка</label><br>
 							<select name="firm" id="firm2">
@@ -104,23 +104,15 @@
 								<option value="1">Фирма 1</option>
 								<option value="2">Фирма 2</option>
 							</select><br>
-							<label for="width2" class="blocks">Модель</label><br>
-							<select name="width" id="width2">
-								<option value="0">--------------</option>
-								<option value="1">Ширина 1</option>
-								<option value="2">Ширина 2</option>
+							<label for="model" class="blocks">Модель</label><br>
+							<select name="model" id="model">
 							</select><br>
-							<label for="profile2" class="blocks">Модификация</label><br>
-							<select name="profile" id="profile2">
-								<option value="0">--------------</option>
-								<option value="1">Профиль 1</option>
-								<option value="2">Профиль 2</option>
+							<label for="modification" class="blocks">Модификация</label><br>
+							<select name="modification" id="modification">
 							</select>
                             <label for="season2" class="blocks">Сезон</label><br>
 							<select name="season" id="season2">
 								<option value="0">--------------</option>
-								<option value="1">Значение 1</option>
-								<option value="2">Значение 2</option>
 							</select><br>
 						</div>
 						<div class="box-r">
@@ -147,7 +139,7 @@
 							<label for="presence2">Наличие</label><br>
 							<input type="checkbox" name="presence" id="presence2" class="blocks">
 							<label for="presence2" class="show blocks">Показывать только полные<br>комплекты</label><br>
-							<button type="submit" name="search2" class="btn">Искать</button>
+							<button type="button" name="search2" id="searchAuto" class="btn">Искать</button>
 						</div>
 						<div class="clearfix"></div>
 					</form>

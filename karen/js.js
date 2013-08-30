@@ -6,6 +6,8 @@ $(document).ready(function(){
         success: function(msg){
             $("#season").empty();
             $("#season").append(msg);
+            $("#season2").empty();
+            $("#season2").append(msg);
         }
     });
     $.ajax({
@@ -35,6 +37,7 @@ $(document).ready(function(){
             $("#profile").append(msg);
         }
     });
+    // Жесткость
     $.ajax({
         type: "POST",
         url: "server.php",
@@ -42,6 +45,9 @@ $(document).ready(function(){
         success: function(msg){
             $("#stiffness").empty();
             $("#stiffness").append(msg);
+            $("#stiffness2").empty();
+            $("#stiffness2").append(msg);
+
         }
     });
     $.ajax({
@@ -51,7 +57,49 @@ $(document).ready(function(){
         success: function(msg){
             $("#dia").empty();
             $("#dia").append(msg);
+            $("#dia2").empty();
+            $("#dia2").append(msg);
         }
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "server.php",
+        data: {criterion: 'firm2'},
+        success: function(msg){
+            $("#firm2").empty();
+            $("#firm2").append(msg);
+        }
+    });
+
+    $("#firm2").change(function() {
+        $.ajax({
+            type: "POST",
+            url: "server.php",
+            data: {
+                criterion: 'model',
+                model: $("#firm2 :selected").val()
+            },
+            success: function(msg){
+                $("#model").empty();
+                $("#model").append(msg);
+            }
+        });
+    });
+
+    $("#model").change(function() {
+        $.ajax({
+            type: "POST",
+            url: "server.php",
+            data: {
+                criterion: 'modification',
+                modification: $("#model :selected").val()
+            },
+            success: function(msg){
+                $("#modification").empty();
+                $("#modification").append(msg);
+            }
+        });
     });
 
     $('#searchTire').click(function() {
@@ -66,6 +114,27 @@ $(document).ready(function(){
                 profile: $("#profile :selected").val(),
                 stiffness: $("#stiffness :selected").val(),
                 dia: $("#dia :selected").val(),
+                minPrice: $("#min1").val(),
+                maxPrice: $("#max1").val()
+            },
+            success: function(msg){
+                $("#searchResult").html(msg);
+            }
+        });
+    });
+
+    $('#searchAuto').click(function() {
+        $.ajax({
+            type: "POST",
+            url: "server.php",
+            data: {
+                criterion: 'searchAuto',
+                season: $("#season2 :selected").val(),
+                firm: $("#firm2 :selected").val(),
+                model: $("#model :selected").val(),
+                modification: $("#modification :selected").val(),
+                stiffness: $("#stiffness2 :selected").val(),
+                dia: $("#dia2 :selected").val(),
                 minPrice: $("#min1").val(),
                 maxPrice: $("#max1").val()
             },
