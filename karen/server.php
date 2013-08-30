@@ -123,17 +123,17 @@ function searchTire()
         } else
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
-    $query = sprintf('select `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
+    $query = sprintf('select `tires`.`ID`, `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
         . '`tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R` from tire_list '
         . 'join tire_model on tire_list.ModelID=tire_model.ID '
         . 'join tire_mark on tire_model.MarkID=tire_mark.ID '
         . 'join tires on tire_list.ID=tires.TireID '
         . '%s', ($where) ? 'where ' . implode('and', $where) : '');
     $resource = mysql_query($query);
-    $row = '<table class="searchTire"><tr><th>сезон</th><th>фирма</th><th>ширина</th><th>профиль</th><th>жесткость</th><th>диаметр</th><th>скорость</th></tr>';
+    $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>ширина</th><th>профиль</th><th>жесткость</th><th>диаметр</th><th>скорость</th></tr>';
     while($data = mysql_fetch_assoc($resource)) {
-        $row .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-            $data['Season'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed']);
+        $row .= sprintf('<tr><td><img src="photo/%s.jpg" weight="16" height="16"></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+            $data['ID'], $data['Season'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed']);
     }
     return $row . '</table>';
 }
