@@ -3,7 +3,7 @@
 define('DB_HOST', 'localhost');
 define('DB_LOGIN', 'root');
 define('DB_PASS', '1');
-define('DB_NAME', 'tmp');
+define('DB_NAME', 'karen');
 
 mysql_connect(DB_HOST, DB_LOGIN, DB_PASS);
 mysql_select_db(DB_NAME);
@@ -23,7 +23,7 @@ if (array_key_exists('criterion', $_POST)) {
             echo getProfile();
         break;
         case 'stiffness':
-            echo getProfile();
+            echo getStiffness();
         break;
         case 'dia':
             echo getDia();
@@ -37,30 +37,66 @@ if (array_key_exists('criterion', $_POST)) {
 
 function getSeason()
 {
-    return '<option value="0">--------------</option><option value="1">Зима</option><option value="2">Лето</option>';
+    $query = 'select distinct `Season` from `tire_list`';
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+    }
+    return $row;
 }
 
 function getBrand()
 {
-    return '<option value="0">--------------</option><option value="1">Адидас</option><option value="2">Рибок</option>';
+    $query = 'select `ID`, `Name` from `tire_mark`';
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+    }
+    return $row;
 }
 
 function getWidth()
 {
-    return '<option value="0">--------------</option><option value="1">Адидас</option><option value="2">Рибок</option>';
+    $query = 'select distinct `W` from `tire_list` order by `W` asc';
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+    }
+    return $row;
 }
 
 function getProfile()
 {
-    return '<option value="0">--------------</option><option value="1">Адидас</option><option value="2">Рибок</option>';
+    $query = 'select distinct `H` from `tire_list` order by `H` asc';
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+    }
+    return $row;
 }
 
 function getStiffness()
 {
-    return '<option value="0">--------------</option><option value="1">Адидас</option><option value="2">Рибок</option>';
+    $query = 'select distinct `Weight`+0 as `Weight` from `tire_list` order by `Weight` asc';
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+    }
+    return $row;
 }
 
 function getDia()
 {
-    return '<option value="0">--------------</option><option value="1">Адидас</option><option value="2">Рибок</option>';
+    $query = 'select distinct `R` from `tire_list` order by `R` asc';
+    $resource = mysql_query($query);
+    $row = '<option value="0">--------------</option>';
+    while($data = mysql_fetch_row($resource)) {
+        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+    }
+    return $row;
 }
