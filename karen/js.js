@@ -149,15 +149,17 @@ $(document).ready(function(){
         });
     });
 
-    $.ajax({
-        type: "POST",
-        url: "server.php",
-        data: {
-            criterion: 'nextPage',
-            offset: getURLParameter('offset')},
-        success: function(msg){
-            $("#searchResult").empty();
-            $("#searchResult").html(msg);
-        }
-    });
+    if (parseInt(getURLParameter('offset')) > 0) {
+        $.ajax({
+            type: "POST",
+            url: "server.php",
+            data: {
+                criterion: 'nextPage',
+                offset: getURLParameter('offset')},
+            success: function(msg){
+                $("#searchResult").empty();
+                $("#searchResult").html(msg);
+            }
+        });
+    }
 });
