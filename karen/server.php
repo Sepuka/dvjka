@@ -161,7 +161,7 @@ function getFirm2()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[1], $data[1]);
+        $row .= sprintf('<option value="%d">%s</option>', $data[0], $data[1]);
     }
     return $row;
 }
@@ -172,7 +172,7 @@ function getModel($mark)
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[1], $data[1]);
+        $row .= sprintf('<option value="%d">%s</option>', $data[0], $data[1]);
     }
     return $row;
 }
@@ -183,15 +183,15 @@ function getModification($model)
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[1], $data[1]);
+        $row .= sprintf('<option value="%d">%s</option>', $data[0], $data[1]);
     }
     return $row;
 }
 
 function searchAuto()
 {
-    $allowParams = array('season' => '`tire_list`.`Season`', 'firm' => '`auto_mark`.`Name`',
-        'model' => '`auto_model`.`Name`', 'modification' => '`auto_modification`.`Name`',
+    $allowParams = array('season' => '`tire_list`.`Season`', 'firm' => '`auto_mark`.`ID`',
+        'model' => '`auto_model`.`ID`', 'modification' => '`auto_modification`.`ID`',
         'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`',
         'minPrice' => '`tires`.`Price1`', 'maxPrice' => '`tires`.`Price1`');
     $where = array();
@@ -221,6 +221,8 @@ function searchAuto()
     $resource = mysql_query($query);
     $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
     $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th></tr>';
+    if ($rows == 0)
+        return $row .= '<tr><td colspan=8 align="center">товаров не найдено</td></tr></table>';
     while($data = mysql_fetch_assoc($resource)) {
         $row .= sprintf('<tr align="center"><td><img src="photo/%s.jpg" weight="50" height="50"></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
             $data['ID'], $data['Season'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed']);
