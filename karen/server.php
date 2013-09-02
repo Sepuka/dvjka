@@ -5,6 +5,8 @@ define('DB_LOGIN', 'root');
 define('DB_PASS', '1');
 define('DB_NAME', 'karen');
 
+define('PAGE_LENGTH', 10);
+
 mysql_connect(DB_HOST, DB_LOGIN, DB_PASS);
 mysql_select_db(DB_NAME);
 
@@ -42,6 +44,9 @@ if (array_key_exists('criterion', $_POST)) {
         break;
         case 'searchAuto':
             echo searchAuto();
+        break;
+        case 'nextPage':
+            echo next_page();
         break;
         default:
             header('wrong request', true, 400);
@@ -156,7 +161,7 @@ function getFirm2()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+        $row .= sprintf('<option value="%s">%s</option>', $data[1], $data[1]);
     }
     return $row;
 }
@@ -167,7 +172,7 @@ function getModel($mark)
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+        $row .= sprintf('<option value="%s">%s</option>', $data[1], $data[1]);
     }
     return $row;
 }
@@ -178,7 +183,7 @@ function getModification($model)
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+        $row .= sprintf('<option value="%s">%s</option>', $data[1], $data[1]);
     }
     return $row;
 }
@@ -202,7 +207,8 @@ function searchAuto()
         } else
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
-    $query = sprintf('select `auto`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
+    $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
+    $query = sprintf('select SQL_CALC_FOUND_ROWS `auto`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
         . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed` '
         . 'from auto join auto_modification on auto.ModificationID=auto_modification.ID '
@@ -210,12 +216,76 @@ function searchAuto()
         . 'join auto_mark on auto_mark.ID=auto_model.MarkID '
         . 'join auto_tires on auto_tires.ModificateionID=auto_modification.ID '
         . 'join tire_list on tire_list.ID=auto_tires.TireID '
-        . '%s', ($where) ? 'where ' . implode('and', $where) : '');
+        . '%s limit %d,%d', ($where) ? 'where ' . implode('and', $where) : '', $offset, PAGE_LENGTH);
+    setcookie('where', implode('and', $where), time() + 600, '/');
     $resource = mysql_query($query);
+    $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
     $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th></tr>';
     while($data = mysql_fetch_assoc($resource)) {
         $row .= sprintf('<tr align="center"><td><img src="photo/%s.jpg" weight="50" height="50"></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
             $data['ID'], $data['Season'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed']);
     }
-    return $row . '</table>';
+    return $row . '<tr><td colspan=8 align="center">' . paginator($offset, $rows) . '</td></tr></table>';
+}
+
+function paginator($offset, $max)
+{
+    if ($offset == 0) {
+        $link = array('1');
+        for ($i=2,$p=1;$i<6 && $i<$max;$i++, $p++) {
+            $link[] = sprintf('<a href="index.html?offset=%d">%d</a>', $p * PAGE_LENGTH, $i);
+        }
+        $link = sprintf('%s ... <a href="index.html?offset=%d">%d</a>', implode(',', $link), floor($max / PAGE_LENGTH) * PAGE_LENGTH, floor($max / PAGE_LENGTH));
+    } else if ($max - $offset < PAGE_LENGTH) {
+        // последняя страница
+        $tail = ceil($offset/PAGE_LENGTH) - 3;
+        $link = array(sprintf('<a href="index.html?offset=%d">%d</a>', $tail * PAGE_LENGTH, $tail));
+        for ($i=$tail+1;$i<ceil($offset/PAGE_LENGTH);$i++) {
+            $link[] = sprintf('<a href="index.html?offset=%d">%d</a>', $i * PAGE_LENGTH, $i);
+        }
+        $link = sprintf('... %s, %d', implode(',', $link), $i);
+    } else {
+        $page = ceil($offset / PAGE_LENGTH) + 1;
+        if ($page < 4)
+            $tail = 0;
+        else
+            $tail = $page - 3;
+        $link = array();
+        for ($i=$tail; $i<$page+4; $i++) {
+            if ($i + 1 == $page)
+                $link[] = $i + 1;
+            else
+                $link[] = sprintf('<a href="index.html?offset=%d">%d</a>', $i * PAGE_LENGTH, $i + 1);
+        }
+        $link = sprintf('%s', implode(',', $link));
+        if ($page > 2)
+            $link = '<a href="index.html?offset=0">1</a> ... ' . $link;
+        $pages = floor($max / PAGE_LENGTH);
+        $last = $pages * 10;
+        if ($pages > $page)
+            $link = $link . " ... <a href='index.html?offset={$last}'>{$pages}</a>";
+    }
+    return $link;
+}
+
+function next_page()
+{
+    $offset = ($_POST['offset']) ? (int)$_POST['offset'] : 0;
+    $query = sprintf('select SQL_CALC_FOUND_ROWS `auto`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
+        . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
+        . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed` '
+        . 'from auto join auto_modification on auto.ModificationID=auto_modification.ID '
+        . 'join auto_model on auto_model.ID=auto_modification.ModelID '
+        . 'join auto_mark on auto_mark.ID=auto_model.MarkID '
+        . 'join auto_tires on auto_tires.ModificateionID=auto_modification.ID '
+        . 'join tire_list on tire_list.ID=auto_tires.TireID '
+        . 'where %s limit %d,%d', ($_COOKIE['where']) ? $_COOKIE['where'] : '1=1', $offset, PAGE_LENGTH);
+    $resource = mysql_query($query);
+    $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
+    $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th></tr>';
+    while($data = mysql_fetch_assoc($resource)) {
+        $row .= sprintf('<tr align="center"><td><img src="photo/%s.jpg" weight="50" height="50"></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+            $data['ID'], $data['Season'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed']);
+    }
+    return $row . '<tr><td colspan=8 align="center">' . paginator($offset, $rows) . '</td></tr></table>';
 }

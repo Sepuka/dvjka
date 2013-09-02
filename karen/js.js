@@ -1,4 +1,9 @@
 $(document).ready(function(){
+    function getURLParameter(name) {
+        return decodeURI(
+            (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
+        );
+    }
     $.ajax({
         type: "POST",
         url: "server.php",
@@ -142,5 +147,17 @@ $(document).ready(function(){
                 $("#searchResult").html(msg);
             }
         });
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "server.php",
+        data: {
+            criterion: 'nextPage',
+            offset: getURLParameter('offset')},
+        success: function(msg){
+            $("#searchResult").empty();
+            $("#searchResult").html(msg);
+        }
     });
 });
