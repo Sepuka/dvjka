@@ -208,14 +208,14 @@ function searchAuto()
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
-    $query = sprintf('select SQL_CALC_FOUND_ROWS `auto`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
+    $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
         . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed` '
-        . 'from auto join auto_modification on auto.ModificationID=auto_modification.ID '
+        . 'from tires join tire_list on tires.TireID=tire_list.ID '
+        . 'join auto_tires on `auto_tires`.`TireID`=`tire_list`.`ID` '
+        . 'join auto_modification on auto_tires.ModificateionID=auto_modification.ID '
         . 'join auto_model on auto_model.ID=auto_modification.ModelID '
         . 'join auto_mark on auto_mark.ID=auto_model.MarkID '
-        . 'join auto_tires on auto_tires.ModificateionID=auto_modification.ID '
-        . 'join tire_list on tire_list.ID=auto_tires.TireID '
         . '%s limit %d,%d', ($where) ? 'where ' . implode('and', $where) : '', $offset, PAGE_LENGTH);
     setcookie('where', implode('and', $where), time() + 600, '/');
     $resource = mysql_query($query);
@@ -230,12 +230,19 @@ function searchAuto()
 
 function paginator($offset, $max)
 {
+    if ($max <= PAGE_LENGTH)
+        return;
+
     if ($offset == 0) {
-        $link = array('1');
-        for ($i=2,$p=1;$i<6 && $i<$max;$i++, $p++) {
+        $link = array('1');// Текущая, первая, страница неактивна
+        for ($i=2,$p=1; $i<6 && $i<$max; $i++,$p++) {
             $link[] = sprintf('<a href="index.html?offset=%d">%d</a>', $p * PAGE_LENGTH, $i);
         }
-        $link = sprintf('%s ... <a href="index.html?offset=%d">%d</a>', implode(',', $link), floor($max / PAGE_LENGTH) * PAGE_LENGTH, floor($max / PAGE_LENGTH));
+        $lastPage = floor($max / PAGE_LENGTH);
+        if ($i < $lastPage)
+            $link = sprintf('%s ... <a href="index.html?offset=%d">%d</a>', implode(',', $link), floor($max / PAGE_LENGTH) * PAGE_LENGTH, $lastPage);
+        else
+            $link = implode(',', $link);
     } else if ($max - $offset < PAGE_LENGTH) {
         // последняя страница
         $tail = ceil($offset/PAGE_LENGTH) - 3;
@@ -271,14 +278,14 @@ function paginator($offset, $max)
 function next_page()
 {
     $offset = ($_POST['offset']) ? (int)$_POST['offset'] : 0;
-    $query = sprintf('select SQL_CALC_FOUND_ROWS `auto`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
+    $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
         . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed` '
-        . 'from auto join auto_modification on auto.ModificationID=auto_modification.ID '
+        . 'from tires join tire_list on tires.TireID=tire_list.ID '
+        . 'join auto_tires on `auto_tires`.`TireID`=`tire_list`.`ID` '
+        . 'join auto_modification on auto_tires.ModificateionID=auto_modification.ID '
         . 'join auto_model on auto_model.ID=auto_modification.ModelID '
         . 'join auto_mark on auto_mark.ID=auto_model.MarkID '
-        . 'join auto_tires on auto_tires.ModificateionID=auto_modification.ID '
-        . 'join tire_list on tire_list.ID=auto_tires.TireID '
         . 'where %s limit %d,%d', ($_COOKIE['where']) ? $_COOKIE['where'] : '1=1', $offset, PAGE_LENGTH);
     $resource = mysql_query($query);
     $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
