@@ -224,7 +224,7 @@ function searchAuto()
     if ($rows == 0)
         return $row .= '<tr><td colspan=8 align="center">товаров не найдено</td></tr></table>';
     while($data = mysql_fetch_assoc($resource)) {
-        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img class="zoomimg" src="photo/%s.jpg" weight="50" height="50"></div></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
+        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
             $data['ID'], $data['Season'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed']);
     }
     return $row . '<tr><td colspan=8 align="center">' . paginator($offset, $rows) . '</td></tr></table>';

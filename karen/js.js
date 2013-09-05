@@ -124,20 +124,22 @@ $(document).ready(function(){
             },
             success: function(msg){
                 $("#searchResult").html(msg);
-                $(".zoomimg").hover(function() {
+                $(".zoomimg").click(function() {
                     $(this).children('img').stop(true,true).animate({
-                       height: "250",
-                       width: "250",
-                       left: "-100",
-                       top: "-100"
+                       height: "500",
+                       width: "500",
+                       left: "-200",
+                       top: "-200"
                     }, "fast");
-                }, function() {
-                    $(this).children('img').stop(true,true).animate({
-                        height: "50",
-                        width: "50",
-                        left: "0",
-                        top: "0"
-                    }, "fast");
+                    $(this).addClass('isBig');
+                    $(".isBig").click(function() {
+                        $(this).children('img').stop(true,true).animate({
+                            height: "50",
+                            width: "50",
+                            left: "0",
+                            top: "0"
+                        }, "fast");
+                    });
                 });
             }
         });
@@ -160,20 +162,22 @@ $(document).ready(function(){
             },
             success: function(msg){
                 $("#searchResult").html(msg);
-                $(".zoomimg").hover(function() {
+                $(".zoomimg").click(function() {
                     $(this).children('img').stop(true,true).animate({
-                       height: "250",
-                       width: "250",
-                       left: "-100",
-                       top: "-100"
+                       height: "500",
+                       width: "500",
+                       left: "-200",
+                       top: "-200"
                     }, "fast");
-                }, function() {
-                    $(this).children('img').stop(true,true).animate({
-                        height: "50",
-                        width: "50",
-                        left: "0",
-                        top: "0"
-                    }, "fast");
+                    $(this).addClass('isBig');
+                    $(".isBig").click(function() {
+                        $(this).children('img').stop(true,true).animate({
+                            height: "50",
+                            width: "50",
+                            left: "0",
+                            top: "0"
+                        }, "fast");
+                    });
                 });
             }
         });
@@ -189,20 +193,22 @@ $(document).ready(function(){
             success: function(msg){
                 $("#searchResult").empty();
                 $("#searchResult").html(msg);
-                $(".zoomimg").hover(function() {
+                $(".zoomimg").click(function() {
                     $(this).children('img').stop(true,true).animate({
-                       height: "250",
-                       width: "250",
-                       left: "-100",
-                       top: "-100"
+                       height: "500",
+                       width: "500",
+                       left: "-200",
+                       top: "-200"
                     }, "fast");
-                }, function() {
-                    $(this).children('img').stop(true,true).animate({
-                        height: "50",
-                        width: "50",
-                        left: "0",
-                        top: "0"
-                    }, "fast");
+                    $(this).addClass('isBig');
+                    $(".isBig").click(function() {
+                        $(this).children('img').stop(true,true).animate({
+                            height: "50",
+                            width: "50",
+                            left: "0",
+                            top: "0"
+                        }, "fast");
+                    });
                 });
             }
         });
