@@ -124,6 +124,21 @@ $(document).ready(function(){
             },
             success: function(msg){
                 $("#searchResult").html(msg);
+                $(".zoomimg").hover(function() {
+                    $(this).children('img').stop(true,true).animate({
+                       height: "250",
+                       width: "250",
+                       left: "-100",
+                       top: "-100"
+                    }, "fast");
+                }, function() {
+                    $(this).children('img').stop(true,true).animate({
+                        height: "50",
+                        width: "50",
+                        left: "0",
+                        top: "0"
+                    }, "fast");
+                });
             }
         });
     });
@@ -145,6 +160,21 @@ $(document).ready(function(){
             },
             success: function(msg){
                 $("#searchResult").html(msg);
+                $(".zoomimg").hover(function() {
+                    $(this).children('img').stop(true,true).animate({
+                       height: "250",
+                       width: "250",
+                       left: "-100",
+                       top: "-100"
+                    }, "fast");
+                }, function() {
+                    $(this).children('img').stop(true,true).animate({
+                        height: "50",
+                        width: "50",
+                        left: "0",
+                        top: "0"
+                    }, "fast");
+                });
             }
         });
     });
@@ -159,6 +189,21 @@ $(document).ready(function(){
             success: function(msg){
                 $("#searchResult").empty();
                 $("#searchResult").html(msg);
+                $(".zoomimg").hover(function() {
+                    $(this).children('img').stop(true,true).animate({
+                       height: "250",
+                       width: "250",
+                       left: "-100",
+                       top: "-100"
+                    }, "fast");
+                }, function() {
+                    $(this).children('img').stop(true,true).animate({
+                        height: "50",
+                        width: "50",
+                        left: "0",
+                        top: "0"
+                    }, "fast");
+                });
             }
         });
     }

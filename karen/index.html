@@ -12,6 +12,12 @@
 	<!--[if lte IE 8]>
 		<link rel="stylesheet" type="text/css" href="css/ie7-8.css">
 	<![endif]-->
+    <style>
+        div.zoomimg { width:50px; height:50px; position:relative; float:left; }
+        div.zoomimg img { position:relative; cursor:pointer; left:0; top:0; width:50px; height:50px; }
+        div.zoomimg:hover { overflow:visible; visibility:hidden; }
+        div.zoomimg:hover img { visibility:visible; position:absolute; z-index:150; }
+    </style>
 </head>
 <body>
 <div id="page">
