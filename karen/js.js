@@ -22,6 +22,11 @@ $(document).ready(function(){
         success: function(msg){
             $("#firm").empty();
             $("#firm").append(msg);
+            if ($.urlParam('brandtire')) {
+                $("#firm :contains('" + $.urlParam('brandtire') + "')").attr("selected", "selected");
+                if ($("#firm").val() != 0)
+                    $('#searchTire').trigger('click');
+            }
         }
     });
     $.ajax({

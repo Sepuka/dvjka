@@ -134,7 +134,7 @@ function getDia()
 
 function searchTire()
 {
-    $allowParams = array('season' => '`tire_list`.`Season`', 'firm' => '`tire_mark`.`Name`',
+    $allowParams = array('season' => '`tire_list`.`Season`', 'firm' => '`tire_mark`.`ID`',
         'width' => '`tire_list`.`W`', 'profile' => '`tire_list`.`H`',
         'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`',
         'minPrice' => '`tires`.`Price1`', 'maxPrice' => '`tires`.`Price1`');
@@ -151,7 +151,7 @@ function searchTire()
         } else
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
-    $where[] = ($_POST['presence']=='true') ? '`tires`.`Qty`>3' : '1=1';
+    $where[] = ($_POST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
         . '`tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R`, `tires`.`Wear`, `tires`.`Qty` from tire_list '
@@ -222,7 +222,7 @@ function searchAuto()
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
-    $where[] = ($_POST['presence']=='true') ? '`tires`.`Qty`>3' : '1=1';
+    $where[] = ($_POST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
         . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed`, `tires`.`Wear`, `tires`.`Qty` '
