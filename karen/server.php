@@ -140,7 +140,7 @@ function searchTire()
         } else
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
-    $where[] = ((int)$_POST['presence']) ? '`tires`.`Qty`>3' : '1=1';
+    $where[] = ($_POST['presence']=='true') ? '`tires`.`Qty`>3' : '1=1';
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
         . '`tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R` from tire_list '
@@ -211,7 +211,7 @@ function searchAuto()
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
-    $where[] = ((int)$_POST['presence']) ? '`tires`.`Qty`>3' : '1=1';
+    $where[] = ($_POST['presence']=='true') ? '`tires`.`Qty`>3' : '1=1';
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
         . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed` '
