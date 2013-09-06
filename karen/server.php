@@ -163,8 +163,9 @@ function searchTire()
     $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
     $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>ширина</th><th>профиль</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
     while($data = mysql_fetch_assoc($resource)) {
-        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-            $data['ID'], $data['Season'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+            . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
+            $data['ID'], $data['Season'], $data['ID'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
     }
     return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, 'tires') . '</td></tr></table>';
 }
@@ -239,8 +240,9 @@ function searchAuto()
     if ($rows == 0)
         return $row .= '<tr><td colspan=8 align="center">товаров не найдено</td></tr></table>';
     while($data = mysql_fetch_assoc($resource)) {
-        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-            $data['ID'], $data['Season'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+            . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
+            $data['ID'], $data['Season'], $data['ID'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
     }
     return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, 'auto') . '</td></tr></table>';
 }
@@ -278,8 +280,9 @@ function next_page()
         $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
         $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
         while($data = mysql_fetch_assoc($resource)) {
-            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-                $data['ID'], $data['Season'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+                . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
+                $data['ID'], $data['Season'], $data['ID'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
         }
     } else {
         $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
@@ -292,8 +295,9 @@ function next_page()
         $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
         $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>ширина</th><th>профиль</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
         while($data = mysql_fetch_assoc($resource)) {
-            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-                $data['ID'], $data['Season'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+                . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
+                $data['ID'], $data['Season'], $data['ID'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
         }
     }
     return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, $_POST['tbl']) . '</td></tr></table>';
