@@ -120,7 +120,8 @@ $(document).ready(function(){
                 stiffness: $("#stiffness :selected").val(),
                 dia: $("#dia :selected").val(),
                 minPrice: $("#min1").val(),
-                maxPrice: $("#max1").val()
+                maxPrice: $("#max1").val(),
+                presence: $("#presence1").prop("checked")
             },
             success: function(msg){
                 $("#searchResult").html(msg);
@@ -158,7 +159,8 @@ $(document).ready(function(){
                 stiffness: $("#stiffness2 :selected").val(),
                 dia: $("#dia2 :selected").val(),
                 minPrice: $("#min1").val(),
-                maxPrice: $("#max1").val()
+                maxPrice: $("#max1").val(),
+                presence: $("#presence2").prop("checked")
             },
             success: function(msg){
                 $("#searchResult").html(msg);
