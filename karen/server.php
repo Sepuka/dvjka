@@ -48,11 +48,34 @@ if (array_key_exists('criterion', $_POST)) {
         case 'nextPage':
             echo next_page();
         break;
+        case 'id':
+            echo byID($_POST['id']);
+        break;
         default:
             header('wrong request', true, 400);
     }
 } else {
     header('wrong request', true, 400);
+}
+
+function byID($id) {
+    $query = sprintf('select `tires`.`ID` as `ID`, `tires`.`Wear`, `tires`.`Price4`, `tires`.`Price2`, `tires`.`Price1`, `tires`.`Qty`, `tire_list`.`Speed`,
+            `tire_list`.`Season` from tires join tire_list on tire_list.ID=tires.TireID where `tires`.`ID`=%d',
+        $id);
+    $resource = mysql_query($query);
+    $data = mysql_fetch_assoc($resource);
+    return sprintf('<table>'
+        . '<tr><td colspan=2><img src="photo/%s.jpg"></td></tr>'
+        . '<tr><th>Износ</th><td>%s</td></tr>'
+        . '<tr><th>Цена 4</th><td>%s</td></tr>'
+        . '<tr><th>Цена 2</th><td>%s</td></tr>'
+        . '<tr><th>Цена 1</th><td>%s</td></tr>'
+        . '<tr><th>Количество</th><td>%s</td></tr>'
+        . '<tr><th>Скорость</th><td>%s</td></tr>'
+        . '<tr><th>Сезон</th><td>%s</td></tr>'
+        . '</table>',
+        $data['ID'], wear($data['Wear']), $data['Price4'], $data['Price2'], $data['Price1'], $data['Qty'], $data['Speed'],
+            $data['Season']);
 }
 
 function Wear($wear)

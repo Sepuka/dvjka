@@ -7,6 +7,24 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="text/javascript" charset="utf-8" src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js.js"></script>
+    <script type="text/javascript" charset="utf-8">
+    $(document).ready(function(){
+        if ($.urlParam('ID')) {
+            $.ajax({
+                type: "POST",
+                url: "server.php",
+                data: {criterion: 'id',
+                id: $.urlParam('ID')},
+                success: function(msg) {
+                    $("#searchResult").empty();
+                    $("#searchResult").append(msg);
+                }
+            });
+        }
+    });
+    </script>
 	<!--[if lte IE 8]>
 		<link rel="stylesheet" type="text/css" href="css/ie7-8.css">
 	<![endif]-->
@@ -28,7 +46,7 @@
 			<li><a href="contacts.html">контакты</a></li>
 			<li class="end"><a href="about.html">о нас</a></li>
 		</ul>
-
+<div id="searchResult"></div>
 		<div id="footer">
 			<ul class="nav">
 				<li><a href="service.html">шиномонтаж</a></li>
