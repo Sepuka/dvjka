@@ -1,8 +1,7 @@
 $(document).ready(function(){
-    function getURLParameter(name) {
-        return decodeURI(
-            (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
-        );
+    $.urlParam = function(name){
+        var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
     }
     $.ajax({
         type: "POST",
@@ -185,13 +184,14 @@ $(document).ready(function(){
         });
     });
 
-    if (parseInt(getURLParameter('offset')) > 0) {
+    if (parseInt($.urlParam('offset')) > 0) {
         $.ajax({
             type: "POST",
             url: "server.php",
             data: {
                 criterion: 'nextPage',
-                offset: getURLParameter('offset')},
+                offset: $.urlParam('offset'),
+                tbl: $.urlParam('tbl')},
             success: function(msg){
                 $("#searchResult").empty();
                 $("#searchResult").html(msg);
