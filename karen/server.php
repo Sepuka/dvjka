@@ -64,8 +64,8 @@ function byID($id) {
         $id);
     $resource = mysql_query($query);
     $data = mysql_fetch_assoc($resource);
-    return sprintf('<table>'
-        . '<tr><td colspan=2><img src="photo/%s.jpg"></td></tr>'
+    return sprintf('<table style="line-height:1.5;text-align:left;">'
+        . '<tr><td colspan=2><img src="photo/%s.jpg" style="padding:5px 1px 5px"></td></tr>'
         . '<tr><th>Износ</th><td>%s</td></tr>'
         . '<tr><th>Цена 4</th><td>%s</td></tr>'
         . '<tr><th>Цена 2</th><td>%s</td></tr>'
