@@ -110,7 +110,7 @@ function byID($id) {
         . '<tr><th>Цена за 2 шт</th><td>%s</td></tr>'
         . '<tr><th>Цена за 1 шт</th><td>%s</td></tr>'
         . '<tr><th>Количество</th><td>%s</td></tr>'
-        . '<tr><th>Скорость</th><td>%s</td></tr>'
+        . '<tr><th>Индекс скорости</th><td>%s</td></tr>'
         . '<tr><th>Сезон</th><td>%s</td></tr>'
         . '</table>',
         $images, wear($data['Wear']), $data['Price4'], $data['Price2'], $data['Price1'], $data['Qty'], $data['Speed'],
@@ -120,9 +120,9 @@ function byID($id) {
 function Wear($wear)
 {
     switch ($wear) {
-        case '1': $result = '5%-10%'; break;
-        case '2': $result = '10%-15%'; break;
-        case '3': $result = '15%-25%'; break;
+        case '1': $result = '5-10%'; break;
+        case '2': $result = '10-15%'; break;
+        case '3': $result = '15-25%'; break;
         default: $result = '?';
     }
     return $result;
