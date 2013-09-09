@@ -10,8 +10,8 @@ define('PAGE_LENGTH', 10);
 mysql_connect(DB_HOST, DB_LOGIN, DB_PASS);
 mysql_select_db(DB_NAME);
 
-if (array_key_exists('criterion', $_POST)) {
-    switch ($_POST['criterion']) {
+if (array_key_exists('criterion', $_REQUEST)) {
+    switch ($_REQUEST['criterion']) {
         case 'season':
             echo getSeason();
         break;
@@ -37,10 +37,10 @@ if (array_key_exists('criterion', $_POST)) {
             echo getFirm2();
         break;
         case 'model':
-            echo getModel($_POST['model']);
+            echo getModel($_REQUEST['model']);
         break;
         case 'modification':
-            echo getModification($_POST['modification']);
+            echo getModification($_REQUEST['modification']);
         break;
         case 'searchAuto':
             echo searchAuto();
@@ -49,7 +49,7 @@ if (array_key_exists('criterion', $_POST)) {
             echo next_page();
         break;
         case 'id':
-            echo byID($_POST['id']);
+            echo byID($_REQUEST['id']);
         break;
         default:
             header('wrong request', true, 400);
@@ -201,7 +201,7 @@ function searchTire()
         'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`',
         'minPrice' => '`tires`.`Price1`', 'maxPrice' => '`tires`.`Price1`');
     $where = array();
-    foreach($_POST as $key => $value) {
+    foreach($_REQUEST as $key => $value) {
         if (! array_key_exists($key, $allowParams) || $value == '0')
             continue;
         if ($key == 'minPrice') {
@@ -213,7 +213,7 @@ function searchTire()
         } else
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
-    $where[] = ($_POST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
+    $where[] = ($_REQUEST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name` as `MarkName`,'
         . '`tire_model`.`Name` as `ModelName`, `tire_list`.`W`, `Speed`, '
@@ -275,7 +275,7 @@ function searchAuto()
         'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`',
         'minPrice' => '`tires`.`Price1`', 'maxPrice' => '`tires`.`Price1`');
     $where = array();
-    foreach($_POST as $key => $value) {
+    foreach($_REQUEST as $key => $value) {
         if (! array_key_exists($key, $allowParams) || $value == '0')
             continue;
         if ($key == 'minPrice') {
@@ -288,7 +288,7 @@ function searchAuto()
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
-    $where[] = ($_POST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
+    $where[] = ($_REQUEST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `MarkName`, '
         . '`auto_model`.`Name` as `ModelName`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed`, `tires`.`Wear`, `tires`.`Qty` '
@@ -332,8 +332,8 @@ function paginator($offset, $max, $table)
 
 function next_page()
 {
-    $offset = ($_POST['offset']) ? (int)$_POST['offset'] : 0;
-    if ($_POST['tbl'] == 'auto') {
+    $offset = ($_REQUEST['offset']) ? (int)$_REQUEST['offset'] : 0;
+    if ($_REQUEST['tbl'] == 'auto') {
         $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `MarkName`, '
             . '`auto_model`.`Name` as `ModelName`, `auto_modification`.`Name` as `Mod`, '
             . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed`, `tires`.`Wear`, `tires`.`Qty` '
@@ -371,5 +371,5 @@ function next_page()
                 $img, $data['Season'], $data['ID'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
         }
     }
-    return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, $_POST['tbl']) . '</td></tr></table>';
+    return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, $_REQUEST['tbl']) . '</td></tr></table>';
 }
