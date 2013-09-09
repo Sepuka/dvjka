@@ -58,14 +58,53 @@ if (array_key_exists('criterion', $_POST)) {
     header('wrong request', true, 400);
 }
 
+function GetImgFileNames($d)
+{
+    $season	= strtolower(trim($d['Season']));
+    $mark 	= preg_replace("~\s~is", "_", strtolower(trim($d['MarkName'])));
+    $model 	= preg_replace("~\s~is", "_", strtolower(trim($d['ModelName'])));
+    $w 		= trim($d['W']);
+    $h 		= trim($d['H']);
+    $r 		= trim($d['R']);
+
+    switch ($season)
+    {
+        case 'зима' : 		$season = 'w'; break;
+        case 'лето' : 		$season = 's'; break;
+        case 'всесезонные' :	$season = 'a'; break;
+    }
+    $parts 	= array($season, $mark, $model, $w, $h, $r, 'sm');
+    $name 	= implode("_", $parts);
+
+    $files = array();
+    $files[] = $name.'.jpg';
+    $files[] = $name.'.JPG';
+
+    for ($i = 2; $i <= 10; $i++)
+    {
+        $files[] = $name.' ('.$i.').jpg';
+        $files[] = $name.' ('.$i.').JPG';
+    }
+    return $files;
+}
+
 function byID($id) {
-    $query = sprintf('select `tires`.`ID` as `ID`, `tires`.`Wear`, `tires`.`Price4`, `tires`.`Price2`, `tires`.`Price1`, `tires`.`Qty`, `tire_list`.`Speed`,
-            `tire_list`.`Season` from tires join tire_list on tire_list.ID=tires.TireID where `tires`.`ID`=%d',
+    $query = sprintf('select `tires`.`ID` as `ID`, `tires`.`Wear`, `tires`.`Price4`, `tires`.`Price2`, `tires`.`Price1`,'
+        . '`tires`.`Qty`, `tire_list`.`Speed`, `tire_list`.`Season`, `tire_mark`.`Name` as `MarkName`, '
+        . ' `tire_model`.`Name` as `ModelName`, `tire_list`.`W`, `Speed`, '
+        . ' `tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R`, `Season` '
+        . ' from tires join tire_list on tire_list.ID=tires.TireID'
+        . ' join tire_model on tire_list.ModelID=tire_model.ID '
+        . ' join tire_mark on tire_model.MarkID=tire_mark.ID '
+        . ' where `tires`.`ID`=%d',
         $id);
     $resource = mysql_query($query);
     $data = mysql_fetch_assoc($resource);
+    $images = '';
+    foreach (GetImgFileNames($data) as $img)
+        $images .= $img = (is_readable('photo/' . $img)) ? sprintf('<img src="photo/%s" style="padding:5px 1px 5px">', $img) : '';
     return sprintf('<table style="line-height:1.5;text-align:left;margin:10px 0px 10px;">'
-        . '<tr><td colspan=2><img src="photo/%s.jpg" style="padding:5px 1px 5px"></td></tr>'
+        . '<tr><td colspan=2>%s</td></tr>'
         . '<tr><th>Износ</th><td>%s</td></tr>'
         . '<tr><th>Цена 4</th><td>%s</td></tr>'
         . '<tr><th>Цена 2</th><td>%s</td></tr>'
@@ -74,7 +113,7 @@ function byID($id) {
         . '<tr><th>Скорость</th><td>%s</td></tr>'
         . '<tr><th>Сезон</th><td>%s</td></tr>'
         . '</table>',
-        $data['ID'], wear($data['Wear']), $data['Price4'], $data['Price2'], $data['Price1'], $data['Qty'], $data['Speed'],
+        $images, wear($data['Wear']), $data['Price4'], $data['Price2'], $data['Price1'], $data['Qty'], $data['Speed'],
             $data['Season']);
 }
 
@@ -176,7 +215,8 @@ function searchTire()
     }
     $where[] = ($_POST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
-    $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
+    $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name` as `MarkName`,'
+        . '`tire_model`.`Name` as `ModelName`, `tire_list`.`W`, `Speed`, '
         . '`tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R`, `tires`.`Wear`, `tires`.`Qty` from tire_list '
         . 'join tire_model on tire_list.ModelID=tire_model.ID '
         . 'join tire_mark on tire_model.MarkID=tire_mark.ID '
@@ -186,9 +226,11 @@ function searchTire()
     $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
     $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>ширина</th><th>профиль</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
     while($data = mysql_fetch_assoc($resource)) {
-        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+        $img = array_shift(GetImgFileNames($data));
+        $img = (is_readable('photo/' . $img)) ? sprintf('<img src="photo/%s" weight="50" height="50">', $img) : '';
+        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg">%s</div></td>'
             . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-            $data['ID'], $data['Season'], $data['ID'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+            $img, $data['Season'], $data['ID'], $data['MarkName'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
     }
     return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, 'tires') . '</td></tr></table>';
 }
@@ -247,8 +289,8 @@ function searchAuto()
     }
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
     $where[] = ($_POST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
-    $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
-        . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
+    $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `MarkName`, '
+        . '`auto_model`.`Name` as `ModelName`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed`, `tires`.`Wear`, `tires`.`Qty` '
         . 'from tires join tire_list on tires.TireID=tire_list.ID '
         . 'join auto_tires on `auto_tires`.`TireID`=`tire_list`.`ID` '
@@ -263,9 +305,11 @@ function searchAuto()
     if ($rows == 0)
         return $row .= '<tr><td colspan=8 align="center">товаров не найдено</td></tr></table>';
     while($data = mysql_fetch_assoc($resource)) {
-        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+        $img = array_shift(GetImgFileNames($data));
+        $img = (is_readable('photo/' . $img)) ? sprintf('<img src="photo/%s" weight="50" height="50">', $img) : '';
+        $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg">%s</div></td>'
             . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-            $data['ID'], $data['Season'], $data['ID'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+            $img, $data['Season'], $data['ID'], $data['MarkName'], $data['ModelName'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
     }
     return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, 'auto') . '</td></tr></table>';
 }
@@ -290,8 +334,8 @@ function next_page()
 {
     $offset = ($_POST['offset']) ? (int)$_POST['offset'] : 0;
     if ($_POST['tbl'] == 'auto') {
-        $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `Mark`, '
-            . '`auto_model`.`Name` as `Model`, `auto_modification`.`Name` as `Mod`, '
+        $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `MarkName`, '
+            . '`auto_model`.`Name` as `ModelName`, `auto_modification`.`Name` as `Mod`, '
             . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed`, `tires`.`Wear`, `tires`.`Qty` '
             . 'from tires join tire_list on tires.TireID=tire_list.ID '
             . 'join auto_tires on `auto_tires`.`TireID`=`tire_list`.`ID` '
@@ -303,13 +347,15 @@ function next_page()
         $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
         $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
         while($data = mysql_fetch_assoc($resource)) {
-            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+            $img = array_shift(GetImgFileNames($data));
+            $img = (is_readable('photo/' . $img)) ? sprintf('<img src="photo/%s" weight="50" height="50">', $img) : '';
+            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg">%s</div></td>'
                 . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-                $data['ID'], $data['Season'], $data['ID'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+                $img, $data['Season'], $data['ID'], $data['Mark'], $data['Model'], $data['Mod'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
         }
     } else {
-        $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name`, `tire_list`.`W`, `Speed`, '
-        . '`tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R` from tire_list '
+        $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name` as `MarkName`, `tire_list`.`W`, `Speed`, '
+        . '`tire_model`.`Name` as `ModelName`, `tire_list`.`H`, `tire_list`.`Weight`, `tire_list`.`R` from tire_list '
         . 'join tire_model on tire_list.ModelID=tire_model.ID '
         . 'join tire_mark on tire_model.MarkID=tire_mark.ID '
         . 'join tires on tire_list.ID=tires.TireID '
@@ -318,9 +364,11 @@ function next_page()
         $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
         $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>ширина</th><th>профиль</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
         while($data = mysql_fetch_assoc($resource)) {
-            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg"><img src="photo/%s.jpg" weight="50" height="50"></div></td>'
+            $img = array_shift(GetImgFileNames($data));
+            $img = (is_readable('photo/' . $img)) ? sprintf('<img src="photo/%s" weight="50" height="50">', $img) : '';
+            $row .= sprintf('<tr align="center" height="53"><td><div class="zoomimg">%s</div></td>'
                 . '<td style="vertical-align:middle">%s</td><td style="vertical-align:middle"><a href="tire.html?ID=%d">%s</a></td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td><td style="vertical-align:middle">%s</td></tr>',
-                $data['ID'], $data['Season'], $data['ID'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
+                $img, $data['Season'], $data['ID'], $data['Name'], $data['W'], $data['H'], $data['Weight'], $data['R'], $data['Speed'], Wear($data['Wear']), $data['Qty']);
         }
     }
     return $row . '<tr><td colspan=10 align="center">' . paginator($offset, $rows, $_POST['tbl']) . '</td></tr></table>';
