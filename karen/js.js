@@ -45,113 +45,22 @@ $(document).ready(function(){
         });
     });
 
-    $('#searchTire').click(function() {
-        $.ajax({
-            type: "POST",
-            url: "server.php",
-            data: {
-                criterion: 'searchTire',
-                season: $("#season :selected").val(),
-                firm: $("#firm :selected").val(),
-                width: $("#width :selected").val(),
-                profile: $("#profile :selected").val(),
-                stiffness: $("#stiffness :selected").val(),
-                dia: $("#dia :selected").val(),
-                minPrice: $("#min1").val(),
-                maxPrice: $("#max1").val(),
-                presence: $("#presence1").prop("checked")
-            },
-            success: function(msg){
-                $("#searchResult").html(msg);
-                $(".zoomimg").click(function() {
-                    $(this).children('img').stop(true,true).animate({
-                       height: "500",
-                       width: "500",
-                       left: "-200",
-                       top: "-200"
-                    }, "fast");
-                    $(this).addClass('isBig');
-                    $(".isBig").click(function() {
-                        $(this).children('img').stop(true,true).animate({
-                            height: "50",
-                            width: "50",
-                            left: "0",
-                            top: "0"
-                        }, "fast");
-                    });
-                });
-            }
+    $(".zoomimg").click(function() {
+        $(this).children('img').stop(true,true).animate({
+           height: "500",
+           width: "500",
+           left: "-200",
+           top: "-200"
+        }, "fast");
+        $(this).addClass('isBig');
+        $(".isBig").click(function() {
+            $(this).children('img').stop(true,true).animate({
+                height: "50",
+                width: "50",
+                left: "0",
+                top: "0"
+            }, "fast");
+            $(this).removeClass('isBig');
         });
     });
-
-    $('#searchAuto').click(function() {
-        $.ajax({
-            type: "POST",
-            url: "server.php",
-            data: {
-                criterion: 'searchAuto',
-                season: $("#season2 :selected").val(),
-                firm: $("#firm2 :selected").val(),
-                model: $("#model :selected").val(),
-                modification: $("#modification :selected").val(),
-                stiffness: $("#stiffness2 :selected").val(),
-                dia: $("#dia2 :selected").val(),
-                minPrice: $("#min1").val(),
-                maxPrice: $("#max1").val(),
-                presence: $("#presence2").prop("checked")
-            },
-            success: function(msg){
-                $("#searchResult").html(msg);
-                $(".zoomimg").click(function() {
-                    $(this).children('img').stop(true,true).animate({
-                       height: "500",
-                       width: "500",
-                       left: "-200",
-                       top: "-200"
-                    }, "fast");
-                    $(this).addClass('isBig');
-                    $(".isBig").click(function() {
-                        $(this).children('img').stop(true,true).animate({
-                            height: "50",
-                            width: "50",
-                            left: "0",
-                            top: "0"
-                        }, "fast");
-                    });
-                });
-            }
-        });
-    });
-
-    if (parseInt($.urlParam('offset1')) > 0) {
-        $.ajax({
-            type: "POST",
-            url: "server.php",
-            data: {
-                criterion: 'nextPage',
-                offset: $.urlParam('offset'),
-                tbl: $.urlParam('tbl')},
-            success: function(msg){
-                $("#searchResult").empty();
-                $("#searchResult").html(msg);
-                $(".zoomimg").click(function() {
-                    $(this).children('img').stop(true,true).animate({
-                       height: "500",
-                       width: "500",
-                       left: "-200",
-                       top: "-200"
-                    }, "fast");
-                    $(this).addClass('isBig');
-                    $(".isBig").click(function() {
-                        $(this).children('img').stop(true,true).animate({
-                            height: "50",
-                            width: "50",
-                            left: "0",
-                            top: "0"
-                        }, "fast");
-                    });
-                });
-            }
-        });
-    }
 });

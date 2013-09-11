@@ -164,19 +164,19 @@
 				<div class="left">
 					<div class="title">Сейчас в наличии</div>
 					<ul class="box1 blocks">
-						<li><a href="index.html?brandtire=NOKIAN">Nokian</a></li>
-						<li><a href="index.html?brandtire=BFGOODRICH">BFGoodrich</a></li>
-						<li><a href="index.html?brandtire=TIGARCONTINENTAL">TigarContinental</a></li>
+						<li><a href="index.php?brandtire=NOKIAN">Nokian</a></li>
+						<li><a href="index.php?brandtire=BFGOODRICH">BFGoodrich</a></li>
+						<li><a href="index.php?brandtire=TIGARCONTINENTAL">TigarContinental</a></li>
 					</ul><!--
 				/--><ul class="box2 blocks">
-						<li><a href="index.html?brandtire=CORDIANT">Cordiant</a></li>
-						<li><a href="index.html?brandtire=SAVABARUMGT">SavaBarumGT</a></li>
-						<li><a href="index.html?brandtire=RADIAL">Radial</a></li>
+						<li><a href="index.php?brandtire=CORDIANT">Cordiant</a></li>
+						<li><a href="index.php?brandtire=SAVABARUMGT">SavaBarumGT</a></li>
+						<li><a href="index.php?brandtire=RADIAL">Radial</a></li>
 					</ul><!--
 				/--><ul class="blocks">
-						<li><a href="index.html?brandtire=CONTINENTAL">Continental</a></li>
-						<li><a href="index.html?brandtire=GISLAVED">Gislaved</a></li>
-						<li><a href="index.html?brandtire=HANKOOK">Hankook</a></li>
+						<li><a href="index.php?brandtire=CONTINENTAL">Continental</a></li>
+						<li><a href="index.php?brandtire=GISLAVED">Gislaved</a></li>
+						<li><a href="index.php?brandtire=HANKOOK">Hankook</a></li>
 					</ul>
 				</div>
 				<div class="right">тел.8-916-945-12-30<br>ул. Ивана Франко, 2а</div>
