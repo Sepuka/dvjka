@@ -33,8 +33,6 @@ if (array_key_exists('criterion', $_REQUEST)) {
         default:
             header('wrong request', true, 400);
     }
-} else {
-    header('wrong request', true, 400);
 }
 
 function GetImgFileNames($d)
@@ -124,9 +122,10 @@ function getBrand()
     $query = 'select `ID`, `Name` from `tire_mark`';
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
+    $mark = (array_key_exists('firm', $_GET)) ? $_GET['firm'] : (array_key_exists('brandtire', $_GET) ? $_GET['brandtire'] : '');
     while($data = mysql_fetch_row($resource)) {
         $row .= sprintf('<option value="%s"%s>%s</option>',
-            $data[0], (array_key_exists('firm', $_GET) && $_GET['firm'] == $data[0]) ? ' selected' : '', $data[1]);
+            $data[0], (in_array(strtolower($mark), array($data[0], strtolower($data[1])))) ? ' selected' : '', $data[1]);
     }
     return $row;
 }
