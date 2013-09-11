@@ -68,7 +68,7 @@
 							<label for="presence1">Наличие</label><br>
 							<input type="checkbox" name="presence" class="blocks">
 							<label for="presence1" class="show blocks">Показывать только полные<br>комплекты</label><br>
-							<button type="submit" name="search1" id="searchTire" class="btn">Искать</button>
+							<button type="submit" name="tbl" value="tire" class="btn">Искать</button>
 						</div>
 						<div class="clearfix"></div>
 					</form>
@@ -78,7 +78,7 @@
 				<div class="content">
 					<div class="patch"></div>
 					<div class="title2">Подбор шин по авто</div>
-					<form class="form">
+                    <form class="form" action="index.php?tbl=auto">
 						<div class="box-l">
 							<label for="firm2" class="blocks">Марка</label><br>
 							<select name="firm" id="firm2">
@@ -93,23 +93,13 @@
 							<select name="modification" id="modification">
 							</select>
                             <label for="season2" class="blocks">Сезон</label><br>
-							<select name="season" id="season2">
-								<option value="0">--------------</option>
-							</select><br>
+							<select name="season"><?php echo getSeason();?></select><br>
 						</div>
 						<div class="box-r">
 							<label for="stiffness2" class="blocks">Жесткость</label><br>
-							<select name="stiffness" id="stiffness2">
-								<option value="0">--------------</option>
-								<option value="1">Жесткость 1</option>
-								<option value="2">Жесткость 2</option>
-							</select><br>
+							<select name="stiffness"><?php echo getStiffness();?></select><br></select><br>
 							<label for="dia2" class="blocks">Диаметр</label><br>
-							<select name="dia" id="dia2">
-								<option value="0">--------------</option>
-								<option value="1">Диаметр 1</option>
-								<option value="2">Диаметр 2</option>
-							</select><br>
+							<select name="dia"><?php echo getDia();?></select><br>
 							<div class="blocks">
 								<label for="max2" class="blocks">Макс.цена</label><br>
 								<input type="text" name="max" id="max2" class="int">
@@ -121,7 +111,7 @@
 							<label for="presence2">Наличие</label><br>
 							<input type="checkbox" name="presence" id="presence2" class="blocks">
 							<label for="presence2" class="show blocks">Показывать только полные<br>комплекты</label><br>
-							<button type="button" name="search2" id="searchAuto" class="btn">Искать</button>
+                            <button type="submit" name="tbl" value="auto" class="btn">Искать</button>
 						</div>
 						<div class="clearfix"></div>
 					</form>

@@ -5,33 +5,15 @@ define('DB_LOGIN', 'root');
 define('DB_PASS', '1');
 define('DB_NAME', 'karen');
 
-define('PAGE_LENGTH', 2);
+define('PAGE_LENGTH', 10);
 
 mysql_connect(DB_HOST, DB_LOGIN, DB_PASS);
 mysql_select_db(DB_NAME);
 
 if (array_key_exists('criterion', $_REQUEST)) {
     switch ($_REQUEST['criterion']) {
-        case 'season':
-            echo getSeason();
-        break;
         case 'brand':
             echo getBrand();
-        break;
-        case 'width':
-            echo getWidth();
-        break;
-        case 'profile':
-            echo getProfile();
-        break;
-        case 'stiffness':
-            echo getStiffness();
-        break;
-        case 'dia':
-            echo getDia();
-        break;
-        case 'searchTire':
-            echo searchTire();
         break;
         case 'firm2':
             echo getFirm2();
@@ -294,7 +276,7 @@ function searchAuto()
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
-    $where[] = ($_REQUEST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
+    $where[] = ($_REQUEST['presence']=='on') ? ' `tires`.`Qty`>3' : ' 1=1';
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `auto_mark`.`Name` as `MarkName`, '
         . '`auto_model`.`Name` as `ModelName`, `auto_modification`.`Name` as `Mod`, '
         . '`tire_list`.`Weight`, `tire_list`.`R`, `tire_list`.`Speed`, `tires`.`Wear`, `tires`.`Qty` '
@@ -304,7 +286,6 @@ function searchAuto()
         . 'join auto_model on auto_model.ID=auto_modification.ModelID '
         . 'join auto_mark on auto_mark.ID=auto_model.MarkID '
         . '%s limit %d,%d', ($where) ? 'where ' . implode('and', $where) : '', $offset, PAGE_LENGTH);
-#setcookie('where', implode('and', $where), time() + 600, '/');
     $resource = mysql_query($query);
     $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
     $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
