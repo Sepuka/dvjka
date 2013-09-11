@@ -4,73 +4,6 @@ $(document).ready(function(){
         if (results != null)
             return results[1] || 0;
     }
-    $.ajax({
-        type: "POST",
-        url: "server.php",
-        data: {criterion: 'season'},
-        success: function(msg){
-            $("#season").empty();
-            $("#season").append(msg);
-            $("#season2").empty();
-            $("#season2").append(msg);
-        }
-    });
-    $.ajax({
-        type: "POST",
-        url: "server.php",
-        data: {criterion: 'brand'},
-        success: function(msg){
-            $("#firm").empty();
-            $("#firm").append(msg);
-            if ($.urlParam('brandtire')) {
-                $("#firm :contains('" + $.urlParam('brandtire') + "')").attr("selected", "selected");
-                if ($("#firm").val() != 0)
-                    $('#searchTire').trigger('click');
-            }
-        }
-    });
-    $.ajax({
-        type: "POST",
-        url: "server.php",
-        data: {criterion: 'width'},
-        success: function(msg){
-            $("#width").empty();
-            $("#width").append(msg);
-        }
-    });
-    $.ajax({
-        type: "POST",
-        url: "server.php",
-        data: {criterion: 'profile'},
-        success: function(msg){
-            $("#profile").empty();
-            $("#profile").append(msg);
-        }
-    });
-    // Жесткость
-    $.ajax({
-        type: "POST",
-        url: "server.php",
-        data: {criterion: 'stiffness'},
-        success: function(msg){
-            $("#stiffness").empty();
-            $("#stiffness").append(msg);
-            $("#stiffness2").empty();
-            $("#stiffness2").append(msg);
-
-        }
-    });
-    $.ajax({
-        type: "POST",
-        url: "server.php",
-        data: {criterion: 'dia'},
-        success: function(msg){
-            $("#dia").empty();
-            $("#dia").append(msg);
-            $("#dia2").empty();
-            $("#dia2").append(msg);
-        }
-    });
 
     $.ajax({
         type: "POST",
@@ -190,7 +123,7 @@ $(document).ready(function(){
         });
     });
 
-    if (parseInt($.urlParam('offset')) > 0) {
+    if (parseInt($.urlParam('offset1')) > 0) {
         $.ajax({
             type: "POST",
             url: "server.php",
@@ -221,5 +154,4 @@ $(document).ready(function(){
             }
         });
     }
-    $('#searchTire').trigger('click');
 });

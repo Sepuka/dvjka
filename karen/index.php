@@ -1,4 +1,4 @@
-
+<?php require 'server.php'; ?>
 <!doctype html>
 <html>
 <head>
@@ -44,43 +44,19 @@
 					<form class="form">
 						<div class="box-l">
 							<label for="season" class="blocks">Сезон</label><br>
-							<select name="season" id="season">
-								<option value="0">--------------</option>
-								<option value="1">Значение 1</option>
-								<option value="2">Значение 2</option>
-							</select><br>
+							<select name="season"><?php echo getSeason();?></select><br>
 							<label for="firm" class="blocks">Фирма</label><br>
-							<select name="firm" id="firm">
-								<option value="0">--------------</option>
-								<option value="1">Фирма 1</option>
-								<option value="2">Фирма 2</option>
-							</select><br>
+                            <select name="firm"><?php echo getBrand();?></select><br>
 							<label for="width" class="blocks">Ширина</label><br>
-							<select name="width" id="width">
-								<option value="0">--------------</option>
-								<option value="1">Ширина 1</option>
-								<option value="2">Ширина 2</option>
-							</select><br>
+                            <select name="width"><?php echo getWidth();?></select><br>
 							<label for="profile" class="blocks">Профиль</label><br>
-							<select name="profile" id="profile">
-								<option value="0">--------------</option>
-								<option value="1">Профиль 1</option>
-								<option value="2">Профиль 2</option>
-							</select>
+                            <select name="profile"><?php echo getProfile();?></select>
 						</div>
 						<div class="box-r">
 							<label for="stiffness" class="blocks">Жесткость</label><br>
-							<select name="stiffness" id="stiffness">
-								<option value="0">--------------</option>
-								<option value="1">Жесткость 1</option>
-								<option value="2">Жесткость 2</option>
-							</select><br>
+                            <select name="stiffness"><?php echo getStiffness();?></select><br>
 							<label for="dia" class="blocks">Диаметр</label><br>
-							<select name="dia" id="dia">
-								<option value="0">--------------</option>
-								<option value="1">Диаметр 1</option>
-								<option value="2">Диаметр 2</option>
-							</select><br>
+                            <select name="dia"><?php echo getDia();?></select><br>
 							<div class="blocks">
 								<label for="max1" class="blocks">Макс.цена</label><br>
 								<input type="text" name="max" id="max1" class="int">
@@ -90,9 +66,9 @@
 								<input type="text" name="min" id="min1" class="int">
 							</div><br>
 							<label for="presence1">Наличие</label><br>
-							<input type="checkbox" name="presence" id="presence1" class="blocks">
+							<input type="checkbox" name="presence" class="blocks">
 							<label for="presence1" class="show blocks">Показывать только полные<br>комплекты</label><br>
-							<button type="button" name="search1" id="searchTire" class="btn">Искать</button>
+							<button type="submit" name="search1" id="searchTire" class="btn">Искать</button>
 						</div>
 						<div class="clearfix"></div>
 					</form>
@@ -153,7 +129,7 @@
 			</div>
 		</div>
 		<div class="container">
-            <div id="searchResult"></div>
+            <div id="searchResult"><?php echo (array_key_exists('tbl', $_GET) && $_GET['tbl'] == 'auto') ? searchAuto() : searchTire();?></div>
 			<div class="content">
 				<div class="banner">
 					<img src="img/banner1.jpg" width="274" height="190" alt=""><!--

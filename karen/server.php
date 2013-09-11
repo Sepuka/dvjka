@@ -5,7 +5,7 @@ define('DB_LOGIN', 'root');
 define('DB_PASS', '1');
 define('DB_NAME', 'karen');
 
-define('PAGE_LENGTH', 10);
+define('PAGE_LENGTH', 2);
 
 mysql_connect(DB_HOST, DB_LOGIN, DB_PASS);
 mysql_select_db(DB_NAME);
@@ -134,7 +134,8 @@ function getSeason()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+        $row .= sprintf('<option value="%s"%s>%s</option>',
+            $data[0], (array_key_exists('season', $_GET) && $_GET['season'] == $data[0]) ? ' selected' : '', $data[0]);
     }
     return $row;
 }
@@ -145,7 +146,8 @@ function getBrand()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[1]);
+        $row .= sprintf('<option value="%s"%s>%s</option>',
+            $data[0], (array_key_exists('firm', $_GET) && $_GET['firm'] == $data[0]) ? ' selected' : '', $data[1]);
     }
     return $row;
 }
@@ -156,7 +158,8 @@ function getWidth()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+        $row .= sprintf('<option value="%s"%s>%s</option>',
+            $data[0], (array_key_exists('width', $_GET) && $_GET['width'] == $data[0]) ? ' selected' : '', $data[0]);
     }
     return $row;
 }
@@ -167,7 +170,8 @@ function getProfile()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+        $row .= sprintf('<option value="%s"%s>%s</option>',
+            $data[0], (array_key_exists('profile', $_GET) && $_GET['profile'] == $data[0]) ? ' selected' : '', $data[0]);
     }
     return $row;
 }
@@ -178,7 +182,8 @@ function getStiffness()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+        $row .= sprintf('<option value="%s"%s>%s</option>',
+            $data[0], (array_key_exists('stiffness', $_GET) && $_GET['stiffness'] == $data[0]) ? ' selected' : '', $data[0]);
     }
     return $row;
 }
@@ -189,7 +194,8 @@ function getDia()
     $resource = mysql_query($query);
     $row = '<option value="0">--------------</option>';
     while($data = mysql_fetch_row($resource)) {
-        $row .= sprintf('<option value="%s">%s</option>', $data[0], $data[0]);
+        $row .= sprintf('<option value="%s"%s>%s</option>',
+            $data[0], (array_key_exists('dia', $_GET) && $_GET['dia'] == $data[0]) ? ' selected' : '', $data[0]);
     }
     return $row;
 }
@@ -201,7 +207,7 @@ function searchTire()
         'stiffness' => '`tire_list`.`Weight`', 'dia' => '`tire_list`.`R`',
         'minPrice' => '`tires`.`Price1`', 'maxPrice' => '`tires`.`Price1`');
     $where = array();
-    foreach($_REQUEST as $key => $value) {
+    foreach($_GET as $key => $value) {
         if (! array_key_exists($key, $allowParams) || $value == '0')
             continue;
         if ($key == 'minPrice') {
@@ -213,7 +219,7 @@ function searchTire()
         } else
             $where[] = sprintf('%s="%s"', $allowParams[$key], mysql_real_escape_string($value));
     }
-    $where[] = ($_REQUEST['presence']=='true') ? ' `tires`.`Qty`>3' : ' 1=1';
+    $where[] = ($_GET['presence']=='on') ? ' `tires`.`Qty`>3' : ' 1=1';
     $offset = ($_GET['offset']) ? (int)$_GET['offset'] : 0;
     $query = sprintf('select SQL_CALC_FOUND_ROWS `tires`.`ID`, `Season`, `tire_mark`.`Name` as `MarkName`,'
         . '`tire_model`.`Name` as `ModelName`, `tire_list`.`W`, `Speed`, '
@@ -298,7 +304,7 @@ function searchAuto()
         . 'join auto_model on auto_model.ID=auto_modification.ModelID '
         . 'join auto_mark on auto_mark.ID=auto_model.MarkID '
         . '%s limit %d,%d', ($where) ? 'where ' . implode('and', $where) : '', $offset, PAGE_LENGTH);
-    setcookie('where', implode('and', $where), time() + 600, '/');
+#setcookie('where', implode('and', $where), time() + 600, '/');
     $resource = mysql_query($query);
     $rows = mysql_result(mysql_query('SELECT FOUND_ROWS()'), 0, 0);
     $row = '<table class="searchTire"><tr><th>фото</th><th>сезон</th><th>фирма</th><th>модель</th><th>модификация</th><th>жесткость</th><th>диаметр</th><th>скорость</th><th>Износ</th><th>Количество</th></tr>';
@@ -316,17 +322,19 @@ function searchAuto()
 
 function paginator($offset, $max, $table)
 {
+    unset($_GET['offset']);
+    unset($_GET['tbl']);
     if ($max <= PAGE_LENGTH)
         return;
     $currentPage = floor($offset / PAGE_LENGTH) + 1;
     $pages = ceil($max / PAGE_LENGTH);
-    $paginator = sprintf('<a href="index.html?offset=0&tbl=%s" title="На первую страницу"><<</a>', $table);
+    $paginator = sprintf('<a href="index.php?offset=0&tbl=%s&%s" title="На первую страницу"><<</a>', $table, http_build_query($_GET));
     if ($currentPage > 1)
-        $paginator .= sprintf(' <a href="index.html?offset=%d&tbl=%s" title="На страницу назад"><</a> ', $offset - PAGE_LENGTH, $table);
+        $paginator .= sprintf(' <a href="index.php?offset=%d&tbl=%s&%s" title="На страницу назад"><</a> ', $offset - PAGE_LENGTH, $table, http_build_query($_GET));
     $paginator .= sprintf(' %d ', $currentPage);
     if ($currentPage < $pages)
-        $paginator .= sprintf(' <a href="index.html?offset=%d&tbl=%s" title="На страницу вперед">></a> ', $offset + PAGE_LENGTH, $table);
-    $paginator .= sprintf('<a href="index.html?offset=%d&tbl=%s" title="На последнюю страницу">>></a>', $max - ($max % PAGE_LENGTH), $table);
+        $paginator .= sprintf(' <a href="index.php?offset=%d&tbl=%s&%s" title="На страницу вперед">></a> ', $offset + PAGE_LENGTH, $table, http_build_query($_GET));
+    $paginator .= sprintf('<a href="index.php?offset=%d&tbl=%s&%s" title="На последнюю страницу">>></a>', $max - ($max % PAGE_LENGTH), $table, http_build_query($_GET));
     return $paginator;
 }
 
